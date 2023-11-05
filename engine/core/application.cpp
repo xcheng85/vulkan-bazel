@@ -1,3 +1,7 @@
+#define VK_NO_PROTOTYPES // for volk
+#define VOLK_IMPLEMENTATION // for volk
+#include "volk.h"
+#include <volk.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include "application.h"
@@ -14,6 +18,7 @@ namespace Engine
         // : _context(std::move(ctx))
         {
             spdlog::info("--> Application::Application");
+            volkInitialize();
             spdlog::info("<-- Application::Application");
         }
 

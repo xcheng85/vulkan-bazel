@@ -79,3 +79,16 @@ touch vulkan-engine-app-101/BUILD vulkan-engine-app-101/main.cpp
 bazel build //vulkan-engine-app-101
 bazel run //vulkan-engine-app-101
 ```
+
+## volk for bazel
+```shell
+# You can use volk in header-only fashion. Include volk.h wherever you want to use Vulkan functions. In exactly one source file, define VOLK_IMPLEMENTATION before including volk.h. Do not build volk.c at all in this case. This method of integrating volk makes it possible to set the platform defines mentioned above with arbitrary (preprocessor) logic in your code.
+
+mkdir -p third_party/volk
+touch third_party/volk/volk.BUILD
+touch third_party/volk/BUILD
+
+#define VK_NO_PROTOTYPES // for volk
+#define VOLK_IMPLEMENTATION // for volk
+#include "volk.h"
+```

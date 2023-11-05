@@ -47,6 +47,13 @@ git_repository(
     tag = "v1.12.0"
 )
 
+git_repository(
+    name = "volk",
+    build_file = "@//third_party/volk:volk.BUILD",
+    remote = "https://github.com/zeux/volk.git",
+    tag = "vulkan-sdk-1.3.268.0"
+)
+
 http_archive(
     name = "hedron_make_cc_https_easy",
     url = "https://github.com/hedronvision/bazel-make-cc-https-easy/archive/8df70a9d5eeb68c791412e097c4841e2083b2b47.tar.gz",
