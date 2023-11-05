@@ -70,6 +70,8 @@
         "cfenv": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "strstream": "cpp",
+        "__nullptr": "cpp"
     }
 }

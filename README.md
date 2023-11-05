@@ -40,9 +40,9 @@ touch third_party/glfw/glfw.BUILD
 touch third_party/glfw/BUILD
 
 # for boost di
-mkdir -p third_party/boost-di
-touch third_party/boost-di/boost-di.BUILD
-touch third_party/boost-di/BUILD
+mkdir -p third_party/boost-ext-di
+touch third_party/boost-ext-di/boost-ext-di.BUILD
+touch third_party/boost-ext-di/BUILD
 
 # for spdlog
 mkdir -p third_party/spdlog
@@ -59,4 +59,23 @@ bazel run //vulkan-hello-world
 
 bazel query "//vulkan-hello-world:*"
 bazel query --notool_deps --noimplicit_deps "deps(//vulkan-hello-world:main.cpp)" --output graph
+```
+
+## build shared library
+
+### 1. core
+
+```shell
+# platform, application and window
+mkdir -p engine engine/core
+cd engine/core
+touch BUILD platform.h platform.cpp window.h window.cpp application.h application.cpp
+```
+
+## build application upon library
+```shell
+mkdir -p vulkan-engine-app-101
+touch vulkan-engine-app-101/BUILD vulkan-engine-app-101/main.cpp
+bazel build //vulkan-engine-app-101
+bazel run //vulkan-engine-app-101
 ```
