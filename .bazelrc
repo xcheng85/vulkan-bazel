@@ -1,0 +1,2 @@
+build --cxxopt=-std=gnu++23
+build --per_file_copt=.*\.mm\$@-std=gnu++23
