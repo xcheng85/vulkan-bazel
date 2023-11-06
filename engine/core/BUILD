@@ -8,7 +8,8 @@ cc_library(
         "//third_party/spdlog",
         "//third_party/boost-ext-di",
         "//third_party/glfw",
-        "//third_party/volk"
+        "//third_party/volk",
+        "//third_party/glslang"
     ],
     visibility = ["//visibility:public"],
     copts = ["--std=c++23"],
