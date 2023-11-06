@@ -1,7 +1,7 @@
 #define VK_NO_PROTOTYPES // for volk
 #define VOLK_IMPLEMENTATION // for volk
 #include <volk.h>
-#include <glslang/Include/glslang_c_interface.h>
+#include <glslang/Public/ShaderLang.h>
 #include <glslang/Public/resource_limits_c.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
@@ -20,7 +20,7 @@ namespace Engine
         {
             spdlog::info("--> Application::Application");
 
-            glslang_initialize_process();
+            glslang::InitializeProcess();
 
             volkInitialize();
             
@@ -29,7 +29,7 @@ namespace Engine
 
         Application::~Application()
         {
-            glslang_finalize_process();
+            glslang::FinalizeProcess();
         }
 
         void Application::init()
