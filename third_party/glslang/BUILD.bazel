@@ -1,0 +1,38 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "glslang_deps",
+    linkopts = [
+        "-lpthread",
+    ],
+)
+
+cmake(
+    name = "glslang",
+    build_args = [
+        "-j16",
+    ],
+    cache_entries = {
+    
+    },
+    env = {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_BUILD_PARALLEL_LEVEL": "16"
+    },
+    lib_source = "@glslang//:all",
+    out_include_dir = "include/glslang",
+    out_static_libs = [
+       "libMachineIndependent.a",
+       "libGenericCodeGen.a",
+    ],
+    targets = [
+        "install",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [":glslang_deps"],
+    tool_prefix = "cp -rf /home/xcheng4/github.com/xcheng85/glslang/External/ ../../../../../../external/glslang/ &&"
+)
+

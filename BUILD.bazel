@@ -1,0 +1,25 @@
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "linux_tests",
+    tags = ["manual"],
+    tests = [
+        "//pcre:pcre_build_test",
+    ],
+)
+
+test_suite(
+    name = "linux_rbe_tests",
+    tags = ["manual"],
+    tests = [
+        "//pcre:pcre_build_test",
+    ],
+)
+
+test_suite(
+    name = "macos_tests",
+    tags = ["manual"],
+    tests = [
+        "//pcre:pcre_build_test",
+    ],
+)

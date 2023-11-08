@@ -11,6 +11,7 @@ cc_binary(
         "//third_party/boost-ext-di",
         "//engine/core",
         "//third_party/volk",
+        "//third_party/glslang",
         "@gtest//:gtest",
         "@rules_vulkan//vulkan:vulkan_cc_library"
     ],

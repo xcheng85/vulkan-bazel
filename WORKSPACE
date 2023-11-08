@@ -54,12 +54,6 @@ git_repository(
     tag = "vulkan-sdk-1.3.268.0"
 )
 
-new_local_repository(
-    name = "glslang",
-    path = "third_party/glslang",
-    build_file = "third_party/glslang/glslang.BUILD",
-)
-
 git_repository(
     name = "gtest",
     build_file = "@//third_party/gtest:gtest.BUILD",
@@ -77,3 +71,41 @@ load("@hedron_make_cc_https_easy//:workspace_setup.bzl", "hedron_make_cc_https_e
 hedron_make_cc_https_easy()
 load("@hedron_make_cc_https_easy//:transitive_workspace_setup.bzl", "hedron_keep_cc_https_easy")
 hedron_keep_cc_https_easy()
+
+
+all_content = """filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+    visibility = ["//visibility:public"]
+)
+"""
+
+http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
+    strip_prefix = "rules_foreign_cc-0.9.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+)
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+
+rules_foreign_cc_dependencies()
+
+http_archive(
+    name = "opencv",
+    build_file_content = all_content,
+    sha256 = "a61e7a4618d353140c857f25843f39b2abe5f451b018aab1604ef0bc34cd23d5",
+    strip_prefix = "opencv-4.5.3",
+    urls = [
+        "https://github.com/opencv/opencv/archive/4.5.3.zip",
+    ],
+)
+
+http_archive(
+    name = "glslang",
+    build_file_content = all_content,
+    strip_prefix = "glslang-vulkan-sdk-1.3.268.0",
+    urls = [
+        "https://github.com/KhronosGroup/glslang/archive/refs/tags/vulkan-sdk-1.3.268.0.zip"
+    ],
+)

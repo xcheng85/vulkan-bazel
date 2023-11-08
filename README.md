@@ -96,21 +96,13 @@ touch third_party/volk/BUILD
 ## bazel for glslang ()
 
 ```shell
-git clone https://github.com/KhronosGroup/glslang.git --branch 13.1.1 --single-branch glslang_13.1.1
-# hack and work around
-./update_glslang_sources.py
-bazel build //vulkan-engine-app-101
-
-## trick1: path match, check the pre-built tar.gz
-## trick2: script in the genrule
-include_files = [
-    "include/glslang/Include/glslang_c_interface.h",
-    "include/glslang/Public/resource_limits_c.h"
-]
-
 
 # to do:  building cmake inside bazel project
 https://github.com/bazelbuild/rules_foreign_cc/tree/main
+
+bazel build //third_party/glslang:glslang --verbose_failures --sandbox_debug
+bazel clean --expunge
+
 
 # vulkan-sdk-1.3.268.0
 mkdir -p third_party/glslang
@@ -124,5 +116,9 @@ touch third_party/glslang/BUILD
 mkdir -p third_party/gtest
 touch third_party/gtest/gtest.BUILD
 touch third_party/gtest/BUILD
+
+
+/external/glslang
+/bazel-out/k8-fastbuild/bin/third_party/glslang/glslang.build_tmpdir
 
 ```
