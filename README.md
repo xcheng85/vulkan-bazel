@@ -100,6 +100,8 @@ touch third_party/volk/BUILD
 # to do:  building cmake inside bazel project
 https://github.com/bazelbuild/rules_foreign_cc/tree/main
 
+# pay attention to: 
+# tool_prefix = "cp -rf /home/xiao/github.com/xcheng85/glslang/External/ ../../../../../../external/glslang/ &&"
 bazel build //third_party/glslang:glslang --verbose_failures --sandbox_debug
 bazel clean --expunge
 
