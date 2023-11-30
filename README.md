@@ -124,3 +124,22 @@ touch third_party/gtest/BUILD
 /bazel-out/k8-fastbuild/bin/third_party/glslang/glslang.build_tmpdir
 
 ```
+
+## vulkan debugging
+
+```shell
+wget https://renderdoc.org/stable/1.29/renderdoc_1.29.tar.gz
+
+tar Cxzvf ./ renderdoc_1.29.tar.gz
+ 
+cd bin/
+
+# run the target program
+bazel run //vulkan-engine-app-101
+
+ ./qrenderdoc
+
+# configure vulkan layer
+
+# provide exec path: /home/xiao/github.com/xcheng85/vulkan-bazel/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101
+```
