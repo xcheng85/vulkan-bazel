@@ -72,6 +72,26 @@
         "variant": "cpp",
         "typeindex": "cpp",
         "strstream": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "*.ipp": "cpp",
+        "any": "cpp",
+        "coroutine": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp",
+        "netfwd": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "future": "cpp",
+        "ranges": "cpp",
+        "scoped_allocator": "cpp",
+        "shared_mutex": "cpp",
+        "valarray": "cpp",
+        "__node_handle": "cpp",
+        "filesystem": "cpp",
+        "locale": "cpp"
     }
 }
