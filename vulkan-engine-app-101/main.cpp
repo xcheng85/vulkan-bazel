@@ -19,6 +19,7 @@
 #include "engine/core/platform.h"
 #include "engine/core/instance.h"
 #include "engine/core/initializer.h"
+#include "engine/core/surface.h"
 
 namespace di = boost::di;
 
@@ -626,10 +627,13 @@ protected:
 
 int main()
 {
+    spdlog::set_level(spdlog::level::debug);
+
     auto framework_module = []
     {
         return di::make_injector(
             di::bind<IWindow>().to<GlfwWindow>(),
+            di::bind<ISurface>().to<VulkanSurface>(),
             di::bind<IApplication>().to<VulkanApplication>());
     };
 

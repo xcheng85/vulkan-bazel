@@ -1,12 +1,11 @@
 # Build Core Engine
 
-## VK instance
+## Step1: VK instance
 
 ## Layers (like middleware)
 https://vulkan.lunarg.com/doc/view/latest/windows/layer_configuration.html
 
 Method selected in this repo: Enabling and ordering the layer using vkCreateInstance()
-
 
 
 ### Relationship between layers and extensions
@@ -53,35 +52,29 @@ VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME
 Validation layer to check if your implementation follows best practice
 Layer: VK_LAYER_KHRONOS_validation
 Extenstion within layer: VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME
-
-
 VkValidationFeaturesEXT: 
 
+## Step2: Platform-dependent VKSurface
+
+Surface wrapper ? 
+depends:
+1. Instance 
+2. Window
 
 
-All the validation layers
+## Step2: VK physical device
 
-// The preferred validation layer is "VK_LAYER_KHRONOS_validation"
-	        {"VK_LAYER_KHRONOS_validation"},
+depends: 
+1. Instance
+2. Surface
 
-	        // Otherwise we fallback to using the LunarG meta layer
-	        {"VK_LAYER_LUNARG_standard_validation"},
+### How to select device from the list ? 
 
-	        // Otherwise we attempt to enable the individual layers that compose the LunarG meta layer since it doesn't exist
-	        {
-	            "VK_LAYER_GOOGLE_threading",
-	            "VK_LAYER_LUNARG_parameter_validation",
-	            "VK_LAYER_LUNARG_object_tracker",
-	            "VK_LAYER_LUNARG_core_validation",
-	            "VK_LAYER_GOOGLE_unique_objects",
-	        },
+glfw create VKSurface from the platform (os-dependent)
 
-	        // Otherwise as a last resort we fallback to attempting to enable the LunarG core layer
-	        {"VK_LAYER_LUNARG_core_validation"}};
+select physical device based on VKSurface
 
 
-
-## VK physical device
 
 
 
