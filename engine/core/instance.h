@@ -1,5 +1,4 @@
 #pragma once
-#define VK_NO_PROTOTYPES // for volk
 
 #include <string>
 #include <boost/di.hpp>
@@ -11,6 +10,7 @@ namespace Engine
 {
     namespace Core
     {
+        class IInitializer;
         class IInstance : public VulkanObject<VkInstance, VK_OBJECT_TYPE_INSTANCE>
         {
         public:
@@ -71,11 +71,11 @@ namespace Engine
         };
 
         // vulkan imp
-
         class VulkanInstance : public IInstance
         {
         public:
             BOOST_DI_INJECT(VulkanInstance,
+                            IInitializer &,
                             IInstanceSettings &);
             virtual ~VulkanInstance();
 

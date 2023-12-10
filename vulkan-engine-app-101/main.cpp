@@ -17,6 +17,8 @@
 #include "engine/core/application.h"
 #include "engine/core/window.h"
 #include "engine/core/platform.h"
+#include "engine/core/instance.h"
+#include "engine/core/initializer.h"
 
 namespace di = boost::di;
 
@@ -28,6 +30,7 @@ class VulkanApplication : public Application
 {
 public:
     VulkanApplication(
+        std::unique_ptr<IInstance> instance
         // std::unique_ptr<IContext> ctx
         )
         : Application(
@@ -629,7 +632,35 @@ int main()
             di::bind<IWindow>().to<GlfwWindow>(),
             di::bind<IApplication>().to<VulkanApplication>());
     };
-    auto injector = di::make_injector(framework_module());
+
+    std::initializer_list<std::string> validationLayers = {
+        "VK_LAYER_KHRONOS_validation",
+    };
+
+    std::initializer_list<std::string> instanceExts = {
+        "VK_KHR_surface",
+        "VK_KHR_xcb_surface",
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+        VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
+        VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME, // best practice validation
+        // VK_EXT_DEBUG_REPORT_EXTENSION_NAME, // deprecated
+    };
+
+    auto core_module = [validationLayers, instanceExts]
+    {
+        return di::make_injector(
+            di::bind<IInitializer>().to<VulkanInitializer>(),
+            di::bind<IInstance>().to<VulkanInstance>(),
+            di::bind<IInstanceSettings>().to<VulkanInstanceSettings>(),
+            di::bind<std::string>().named(APP_NAME).to("VULKAN_ENGINE_APP_101"),
+            di::bind<std::string>().named(APP_VERSION).to("0.0.1"),
+            di::bind<bool>().named(APP_HEADLESS).to(false),
+            di::bind<string[]>.named(REQUIRED_INSTANCE_VALIDATION_LAYERS).to(validationLayers),
+            di::bind<string[]>.named(REQUIRED_INSTANCE_EXTENSIONS).to(instanceExts));
+    };
+
+    auto injector = di::make_injector(framework_module(), core_module());
     auto platform = injector.create<std::unique_ptr<UnixPlatform>>();
     platform.get()->main_loop();
     return 0;

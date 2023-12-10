@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "name": "(gdb) vulkan-engine-app-101",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
+      "args": [],
+      "stopAtEntry": true,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ],
+      "sourceFileMap": {
+        "/proc/self/cwd": "{workspaceFolder}",
+        ".": "${workspaceFolder}"
+      }
+    },
+    {
+      "type": "cppdbg",
+      "request": "launch",
+      "name": "ttt",
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceRoot}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
+      "args": [],
+      "sourceFileMap": {
+        "/proc/self/cwd": "{workspaceFolder}",
+        ".": "${workspaceFolder}"
+      }
+    }
+  ]
+}

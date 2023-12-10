@@ -1,5 +1,6 @@
 #pragma once
 #define VK_NO_PROTOTYPES // for volk
+// #define VOLK_IMPLEMENTATION // for volk
 #include <volk.h>
 #include <spdlog/spdlog.h>
 using namespace std;
