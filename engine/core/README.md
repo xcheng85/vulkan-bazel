@@ -62,19 +62,24 @@ depends:
 2. Window
 
 
-## Step2: VK physical device
-
+## Step3: VK physical device manager
 depends: 
 1. Instance
-2. Surface
+
+
+// 2. Surface
+
+### Get List of physical devices ? 
+vkEnumeratePhysicalDevices
 
 ### How to select device from the list ? 
-
 glfw create VKSurface from the platform (os-dependent)
 
 select physical device based on VKSurface
 
 
-
-
-
+## Step4: VK Logic Device
+depends:
+1. PhysicalDeviceManager to select
+2. OS-dependent Surface
+3. logic device extension

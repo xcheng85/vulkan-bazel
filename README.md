@@ -77,7 +77,7 @@ touch BUILD platform.h platform.cpp window.h window.cpp application.h applicatio
 mkdir -p vulkan-engine-app-101
 touch vulkan-engine-app-101/BUILD vulkan-engine-app-101/main.cpp
 bazel build --compilation_mode=dbg //vulkan-engine-app-101
-bazel run //vulkan-engine-app-101
+bazel run --compilation_mode=dbg //vulkan-engine-app-101
 ```
 
 ## volk for bazel

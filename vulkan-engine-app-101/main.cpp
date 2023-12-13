@@ -20,6 +20,8 @@
 #include "engine/core/instance.h"
 #include "engine/core/initializer.h"
 #include "engine/core/surface.h"
+#include "engine/core/physical_device.h"
+#include "engine/core/physical_device_manager.h"
 
 namespace di = boost::di;
 
@@ -31,7 +33,7 @@ class VulkanApplication : public Application
 {
 public:
     VulkanApplication(
-        std::unique_ptr<IInstance> instance
+        std::unique_ptr<IPhysicalDeviceManager> pDeviceManager
         // std::unique_ptr<IContext> ctx
         )
         : Application(
@@ -661,7 +663,10 @@ int main()
             di::bind<std::string>().named(APP_VERSION).to("0.0.1"),
             di::bind<bool>().named(APP_HEADLESS).to(false),
             di::bind<string[]>.named(REQUIRED_INSTANCE_VALIDATION_LAYERS).to(validationLayers),
-            di::bind<string[]>.named(REQUIRED_INSTANCE_EXTENSIONS).to(instanceExts));
+            di::bind<string[]>.named(REQUIRED_INSTANCE_EXTENSIONS).to(instanceExts),
+            di::bind<IPhysicalDeviceManager>().to<VulkanPhysicalDeviceManager>(),
+            di::bind<IPhysicalDevice>().to<VulkanPhysicalDevice>()
+        );
     };
 
     auto injector = di::make_injector(framework_module(), core_module());
