@@ -61,6 +61,12 @@ git_repository(
     tag = "v1.14.0"
 )
 
+http_archive(
+    name = "magic_enum",
+    build_file = "@//third_party/magic_enum:magic_enum.BUILD",
+    strip_prefix = "magic_enum-e55b9b54d5cf61f8e117cafb17846d7d742dd3b4",
+    urls = ["https://github.com/Neargye/magic_enum/archive/e55b9b54d5cf61f8e117cafb17846d7d742dd3b4.zip"],
+)
 
 http_archive(
     name = "hedron_make_cc_https_easy",

@@ -9,7 +9,8 @@ cc_library(
         "//third_party/boost-ext-di",
         "//third_party/glfw",
         "//third_party/volk",
-        "//third_party/glslang"
+        "//third_party/glslang",
+        "//third_party/magic_enum"
     ],
     visibility = ["//visibility:public"],
     copts = ["--std=c++23"],
