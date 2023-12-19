@@ -92,6 +92,7 @@
         "valarray": "cpp",
         "__node_handle": "cpp",
         "filesystem": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "__split_buffer": "cpp"
     }
 }

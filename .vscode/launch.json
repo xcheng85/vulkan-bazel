@@ -28,16 +28,18 @@
         ".": "${workspaceFolder}"
       }
     },
+
     {
+      "name": "testDebug",
       "type": "cppdbg",
+      "preLaunchTask": "build",
       "request": "launch",
-      "name": "ttt",
-      "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
-      "args": [],
-      "sourceFileMap": {
-        "/proc/self/cwd": "{workspaceFolder}",
-        ".": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101.runfiles/__main__",
+      "linux": {
+        "sourceFileMap": {
+          "/proc/self/cwd": "${workspaceFolder}"
+        }
       }
     }
   ]
