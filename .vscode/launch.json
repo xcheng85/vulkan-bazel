@@ -3,11 +3,12 @@
     {
       "name": "(gdb) vulkan-engine-app-101",
       "type": "cppdbg",
+      "preLaunchTask": "build",
       "request": "launch",
-      "program": "${workspaceFolder}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
+      "program": "${workspaceRoot}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
       "args": [],
-      "stopAtEntry": true,
-      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101.runfiles/__main__",
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
@@ -23,19 +24,6 @@
           "ignoreFailures": true
         }
       ],
-      "sourceFileMap": {
-        "/proc/self/cwd": "{workspaceFolder}",
-        ".": "${workspaceFolder}"
-      }
-    },
-
-    {
-      "name": "testDebug",
-      "type": "cppdbg",
-      "preLaunchTask": "build",
-      "request": "launch",
-      "program": "${workspaceRoot}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101",
-      "cwd": "${workspaceFolder}/bazel-bin/vulkan-engine-app-101/vulkan-engine-app-101.runfiles/__main__",
       "linux": {
         "sourceFileMap": {
           "/proc/self/cwd": "${workspaceFolder}"

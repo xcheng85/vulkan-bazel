@@ -12,6 +12,7 @@
 #include "instance.h"
 #include "physical_device_manager.h"
 #include "physical_device.h"
+#include "surface.h"
 #include "utils.h"
 
 using namespace std;
@@ -42,7 +43,32 @@ namespace Engine
 
         VulkanPhysicalDeviceManager::~VulkanPhysicalDeviceManager()
         {
-            
+        }
+
+        const IPhysicalDevice *VulkanPhysicalDeviceManager::getPhysicalDevice(ISurface const *surface) const
+        {
+            assert(!_pDevices.empty());
+
+            for (auto &pDevice : _pDevices)
+            {
+                // const auto &vkHandle = pDevice->getVkHandle();
+                const auto &imp = dynamic_cast<VulkanPhysicalDevice *>(pDevice.get());
+                assert(imp);
+
+                if (imp->properties().deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                {
+                    const auto &queueCount = imp->queueFamilyProperties().size();
+                    for (uint32_t qId = 0; qId < queueCount; qId++)
+                    {
+                        // device support surface present
+                        if (imp->isSurfacePresentable(surface->getVkHandle(), qId))
+                        {
+                            return pDevice.get();
+                        }
+                    }
+                }
+            }
+            throw std::runtime_error{format("could not find device that could present the surface")};
         }
     }
 }

@@ -22,6 +22,7 @@
 #include "engine/core/surface.h"
 #include "engine/core/physical_device.h"
 #include "engine/core/physical_device_manager.h"
+#include "engine/core/logical_device.h"
 
 namespace di = boost::di;
 
@@ -29,11 +30,474 @@ using namespace std;
 using namespace Engine::Core;
 using namespace spdlog;
 
+class CustomVulkanPhysicalDeviceFeatureRequester : public IPhysicalDeviceFeatureRequester
+{
+public:
+    CustomVulkanPhysicalDeviceFeatureRequester(){
+
+    };
+
+    virtual ~CustomVulkanPhysicalDeviceFeatureRequester(){};
+
+    // If a feature is enabled that the physical device does not support, VkDevice creation will fail and return VK_ERROR_FEATURE_NOT_PRESENT.
+    virtual std::unordered_set<string> requestPhysicalDeviceFeatures(IPhysicalDevice *pDevice) noexcept
+    {
+        std::unordered_set<string> requiredDeviceExtensions{};
+        const auto &imp = dynamic_cast<VulkanPhysicalDevice *>(pDevice);
+        assert(imp);
+        {
+            // check the extension first
+            if (imp->isExtensionSupported(VK_KHR_PERFORMANCE_QUERY_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDevicePerformanceQueryFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR);
+                // performanceCounterQueryPools indicates whether the implementation supports performance counter query pools.
+                if (feature.performanceCounterMultipleQueryPools)
+                {
+                    requiredDeviceExtensions.insert(VK_KHR_PERFORMANCE_QUERY_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_KHR_PERFORMANCE_QUERY_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_KHR_PERFORMANCE_QUERY_EXTENSION_NAME);
+            }
+            // Attempting to enable deprecated extension VK_EXT_host_query_reset, but this extension has been promoted to VK_VERSION_1_2
+            if (imp->isExtensionSupported(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceHostQueryResetFeatures>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES);
+
+                // hostQueryReset indicates that the implementation supports resetting queries from the host with vkResetQueryPool.
+                if (feature.hostQueryReset)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+            }
+            // // buffer device address, vk1.2
+            // if (imp->isExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceBufferDeviceAddressFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR);
+            //     if (feature.bufferDeviceAddress)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
+            // }
+            // // whether writes to color attachments can be enabled and disabled dynamically
+            // if (imp->isExtensionSupported(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceColorWriteEnableFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT);
+            //     if (feature.colorWriteEnable)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+            // }
+            // // if a secondary command buffer can be executed if conditional rendering is active in the primary command buffer
+            // if (imp->isExtensionSupported(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceConditionalRenderingFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT);
+            //     if (feature.conditionalRendering)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+            // }
+            // // the descriptor buffer features
+            // if (imp->isExtensionSupported(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDescriptorBufferFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT);
+            //     if (feature.descriptorBuffer)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+            // }
+            // // descriptor indexing features
+            // if (imp->isExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDescriptorIndexingFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT);
+            //     requiredDeviceExtensions.insert(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
+            // }
+            // // 16 bit storage
+            // if (imp->isExtensionSupported(VK_KHR_16BIT_STORAGE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDevice16BitStorageFeatures>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES);
+            //     if (feature.storageInputOutput16)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
+            // }
+            // // float16 int8
+            // if (imp->isExtensionSupported(VK_KHR_16BIT_STORAGE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceFloat16Int8FeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR);
+            //     if (feature.shaderFloat16 && feature.shaderInt8)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME);
+            // }
+            // // whether the dynamic vertex input state can be used
+            // if (imp->isExtensionSupported(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT);
+            //     if (feature.vertexInputDynamicState)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+            // }
+            // // timeline semaphore
+            // if (imp->isExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR);
+            //     if (feature.timelineSemaphore)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+            // }
+            // // whether the implementation supports v2 synchronization commands
+            // if (imp->isExtensionSupported(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceSynchronization2FeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR);
+            //     if (feature.synchronization2)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+            // }
+            // // whether shader objects can be supported
+            // if (imp->isExtensionSupported(VK_EXT_SHADER_OBJECT_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceShaderObjectFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT);
+            //     if (feature.shaderObject)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+            // }
+            // // dynamic render pass instances
+            // if (imp->isExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDynamicRenderingFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR);
+            //     if (feature.dynamicRendering)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+            // }
+            // // ray tracing features
+            // if (imp->isExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDynamicRenderingFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR);
+            //     if (feature.dynamicRendering)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+            // }
+            // // acceleration structure features for ray tracing
+            // if (imp->isExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceAccelerationStructureFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR);
+            //     if (feature.accelerationStructure)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+            // }
+            // // what extended dynamic state
+            // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT);
+            //     if (feature.extendedDynamicState)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME);
+            // }
+            // // This extension adds some more dynamic state to support applications that need to reduce the number of pipeline state objects they compile and bind.
+            // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicState2FeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT);
+            //     if (feature.extendedDynamicState2)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME);
+            // }
+            // // This extension adds almost all of the remaining pipeline state as dynamic state to help applications further reduce the number of monolithic pipelines they need to create and bind.
+            // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicState3FeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT);
+            //     if (feature.extendedDynamicState3PolygonMode)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+            // }
+
+            // // mesh shading features
+            // if (imp->isExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_MESH_SHADER_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceMeshShaderFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT);
+            //     if (feature.meshShader)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_EXT_MESH_SHADER_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
+            // }
+            // // support for graphics pipeline libraries
+            // // VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT depends on VK_EXT_graphics_pipeline_library
+            // // VK_EXT_graphics_pipeline_library depends on VK_KHR_pipeline_library
+            // if (imp->isExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT);
+            //     if (feature.graphicsPipelineLibrary)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+            // }
+            // // variable rate fragment shading
+            // // VkPhysicalDeviceFragmentShadingRateFeaturesKHR depends on: VK_KHR_fragment_shading_rate
+            // // VK_KHR_fragment_shading_rate depends on: VK_KHR_create_renderpass2
+            // // VK_KHR_create_renderpass2 depends on : VK_KHR_multiview and VK_KHR_maintenance2
+            // if (imp->isExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_MULTIVIEW_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_MAINTENANCE2_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceFragmentShadingRateFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR);
+            //     if (feature.attachmentFragmentShadingRate)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_MULTIVIEW_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
+            // }
+            // // barycentric support in fragment shaders
+            // if (imp->isExtensionSupported(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR);
+            //     if (feature.fragmentShaderBarycentric)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+            // }
+            // // line rasterization features
+            // if (imp->isExtensionSupported(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceLineRasterizationFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT);
+            //     if (feature.smoothLines)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+            // }
+            // // advanced blending features
+            // if (imp->isExtensionSupported(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT);
+            //     if (feature.advancedBlendCoherentOperations)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+            // }
+            // {
+            //     // The request is filling with the capabilities (all on by default)
+            //     auto &vulkan13_features = imp->requestFeatures<VkPhysicalDeviceVulkan13Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
+            //     auto &vulkan12_features = imp->requestFeatures<VkPhysicalDeviceVulkan12Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
+            //     auto &vulkan11_features = imp->requestFeatures<VkPhysicalDeviceVulkan11Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
+            // }
+        }
+        return requiredDeviceExtensions;
+    };
+};
+
 class VulkanApplication : public Application
 {
 public:
     VulkanApplication(
-        std::unique_ptr<IPhysicalDeviceManager> pDeviceManager
+        std::unique_ptr<ILogicalDevice> pDeviceManager
         // std::unique_ptr<IContext> ctx
         )
         : Application(
@@ -644,16 +1108,21 @@ int main()
     };
 
     std::initializer_list<std::string> instanceExts = {
-        "VK_KHR_surface",
-        "VK_KHR_xcb_surface",
+        "VK_KHR_surface",     // which abstract native platform surface or window objects for use with Vulkan
+        "VK_KHR_xcb_surface", // refers to an X11 Window, using the Xlib client-side library,
         VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-        VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+        VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME, // enable fine-grained features
         VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
         VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME, // best practice validation
         // VK_EXT_DEBUG_REPORT_EXTENSION_NAME, // deprecated
+        // VK_EXT_headless_surface, // headless
     };
 
-    auto core_module = [validationLayers, instanceExts]
+    std::initializer_list<std::string> deviceExts = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME, // The VK_KHR_swapchain extension is the device-level companion to the VK_KHR_surface extension
+    };
+
+    auto core_module = [validationLayers, instanceExts, deviceExts]
     {
         return di::make_injector(
             di::bind<IInitializer>().to<VulkanInitializer>(),
@@ -665,8 +1134,12 @@ int main()
             di::bind<string[]>.named(REQUIRED_INSTANCE_VALIDATION_LAYERS).to(validationLayers),
             di::bind<string[]>.named(REQUIRED_INSTANCE_EXTENSIONS).to(instanceExts),
             di::bind<IPhysicalDeviceManager>().to<VulkanPhysicalDeviceManager>(),
-            di::bind<IPhysicalDevice>().to<VulkanPhysicalDevice>()
-        );
+            di::bind<IPhysicalDevice>().to<VulkanPhysicalDevice>(),
+            di::bind<bool>().named(GRAPHICS_QUEUE_HIGH_PRIORITY).to(true),
+            di::bind<string[]>.named(REQUIRED_PHYISICAL_DEVICE_EXTENSIONS).to(deviceExts),
+            di::bind<ILogicDeviceSettings>().to<VulkanLogicDeviceSettings>(),
+            di::bind<IPhysicalDeviceFeatureRequester>().to<CustomVulkanPhysicalDeviceFeatureRequester>(),
+            di::bind<ILogicalDevice>().to<VulkanLogicalDevice>());
     };
 
     auto injector = di::make_injector(framework_module(), core_module());

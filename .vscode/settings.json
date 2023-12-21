@@ -93,6 +93,10 @@
         "__node_handle": "cpp",
         "filesystem": "cpp",
         "locale": "cpp",
-        "__split_buffer": "cpp"
+        "__split_buffer": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }
