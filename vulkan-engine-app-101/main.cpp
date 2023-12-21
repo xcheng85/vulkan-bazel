@@ -64,25 +64,26 @@ public:
             {
                 spdlog::warn("[3rd not availabile] {}", VK_KHR_PERFORMANCE_QUERY_EXTENSION_NAME);
             }
-            // Attempting to enable deprecated extension VK_EXT_host_query_reset, but this extension has been promoted to VK_VERSION_1_2
-            if (imp->isExtensionSupported(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME))
-            {
-                auto &feature = imp->requestFeatures<VkPhysicalDeviceHostQueryResetFeatures>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES);
+            // // Attempting to enable deprecated extension VK_EXT_host_query_reset, but this extension has been promoted to VK_VERSION_1_2
+            // if (imp->isExtensionSupported(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME))
+            // {
+            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceHostQueryResetFeatures>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES);
 
-                // hostQueryReset indicates that the implementation supports resetting queries from the host with vkResetQueryPool.
-                if (feature.hostQueryReset)
-                {
-                    requiredDeviceExtensions.insert(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
-                }
-                else
-                {
-                    spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
-                }
-            }
-            else
-            {
-                spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
-            }
+            //     // hostQueryReset indicates that the implementation supports resetting queries from the host with vkResetQueryPool.
+            //     if (feature.hostQueryReset)
+            //     {
+            //         requiredDeviceExtensions.insert(VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+            //     }
+            //     else
+            //     {
+            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+            //     }
+            // }
+            // else
+            // {
+            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_HOST_QUERY_RESET_EXTENSION_NAME);
+            // }
+            // // Attempting to enable deprecated extension VK_KHR_buffer_device_address, but this extension has been promoted to VK_VERSION_1_2
             // // buffer device address, vk1.2
             // if (imp->isExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
             // {
@@ -100,58 +101,60 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
             // }
-            // // whether writes to color attachments can be enabled and disabled dynamically
-            // if (imp->isExtensionSupported(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceColorWriteEnableFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT);
-            //     if (feature.colorWriteEnable)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
-            // }
-            // // if a secondary command buffer can be executed if conditional rendering is active in the primary command buffer
-            // if (imp->isExtensionSupported(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceConditionalRenderingFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT);
-            //     if (feature.conditionalRendering)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
-            // }
-            // // the descriptor buffer features
-            // if (imp->isExtensionSupported(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDescriptorBufferFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT);
-            //     if (feature.descriptorBuffer)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
-            // }
-            // // descriptor indexing features
+            // whether writes to color attachments can be enabled and disabled dynamically
+            if (imp->isExtensionSupported(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceColorWriteEnableFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT);
+                if (feature.colorWriteEnable)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME);
+            }
+            // if a secondary command buffer can be executed if conditional rendering is active in the primary command buffer
+            if (imp->isExtensionSupported(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceConditionalRenderingFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT);
+                if (feature.conditionalRendering)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_CONDITIONAL_RENDERING_EXTENSION_NAME);
+            }
+            // the descriptor buffer features
+            // VK_EXT_descriptor_buffer is enabled, but GPU-AV does not currently support validation of descriptor buffers
+            if (imp->isExtensionSupported(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceDescriptorBufferFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT);
+                if (feature.descriptorBuffer)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+            }
+            // descriptor indexing features
+            // vk 1.2
             // if (imp->isExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDescriptorIndexingFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT);
@@ -161,7 +164,9 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
             // }
-            // // 16 bit storage
+            // 16 bit storage
+            // Attempting to enable deprecated extension VK_KHR_storage_buffer_storage_class, but this extension has been promoted to VK_VERSION_1_1
+            // Attempting to enable deprecated extension VK_KHR_16bit_storage, but this extension has been promoted to VK_VERSION_1_1
             // if (imp->isExtensionSupported(VK_KHR_16BIT_STORAGE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDevice16BitStorageFeatures>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES);
@@ -179,6 +184,7 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
             // }
+            
             // // float16 int8
             // if (imp->isExtensionSupported(VK_KHR_16BIT_STORAGE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME))
             // {
@@ -187,7 +193,7 @@ public:
             //     {
             //         requiredDeviceExtensions.insert(VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
             //         requiredDeviceExtensions.insert(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
-            //         requiredDeviceExtensions.insert(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
+            //         requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME);
             //     }
             //     else
             //     {
@@ -198,24 +204,25 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME);
             // }
-            // // whether the dynamic vertex input state can be used
-            // if (imp->isExtensionSupported(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT);
-            //     if (feature.vertexInputDynamicState)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
-            // }
+            // whether the dynamic vertex input state can be used
+            if (imp->isExtensionSupported(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT);
+                if (feature.vertexInputDynamicState)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME);
+            }
             // // timeline semaphore
+            // // Attempting to enable deprecated extension VK_KHR_timeline_semaphore, but this extension has been promoted to VK_VERSION_1_2.
             // if (imp->isExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceTimelineSemaphoreFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR);
@@ -233,6 +240,7 @@ public:
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
             // }
             // // whether the implementation supports v2 synchronization commands
+            // // Attempting to enable deprecated extension VK_KHR_synchronization2, but this extension has been promoted to VK_VERSION_1_3.
             // if (imp->isExtensionSupported(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceSynchronization2FeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR);
@@ -249,24 +257,26 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
             // }
-            // // whether shader objects can be supported
-            // if (imp->isExtensionSupported(VK_EXT_SHADER_OBJECT_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceShaderObjectFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT);
-            //     if (feature.shaderObject)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
-            // }
+            // whether shader objects can be supported
+            // GPU-AV does not currently support validation of shader objects
+            if (imp->isExtensionSupported(VK_EXT_SHADER_OBJECT_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceShaderObjectFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT);
+                if (feature.shaderObject)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
+            }
             // // dynamic render pass instances
+            // // Attempting to enable deprecated extension VK_KHR_dynamic_rendering, but this extension has been promoted to VK_VERSION_1_3.
             // if (imp->isExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDynamicRenderingFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR);
@@ -283,41 +293,43 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
             // }
-            // // ray tracing features
-            // if (imp->isExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceDynamicRenderingFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR);
-            //     if (feature.dynamicRendering)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
-            // }
-            // // acceleration structure features for ray tracing
-            // if (imp->isExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceAccelerationStructureFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR);
-            //     if (feature.accelerationStructure)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
-            // }
+            // ray tracing features
+            if (imp->isExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceRayTracingPipelineFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR);
+                if (feature.rayTracingPipeline)
+                {
+                    requiredDeviceExtensions.insert(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+            }
+            // acceleration structure features for ray tracing
+            if (imp->isExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceAccelerationStructureFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR);
+                if (feature.accelerationStructure)
+                {
+                    requiredDeviceExtensions.insert(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+                    requiredDeviceExtensions.insert(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+            }
             // // what extended dynamic state
+            // // Attempting to enable deprecated extension VK_EXT_extended_dynamic_state, but this extension has been promoted to VK_VERSION_1_3.
             // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT);
@@ -335,6 +347,7 @@ public:
             //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME);
             // }
             // // This extension adds some more dynamic state to support applications that need to reduce the number of pipeline state objects they compile and bind.
+            // // Attempting to enable deprecated extension VK_EXT_extended_dynamic_state2, but this extension has been promoted to VK_VERSION_1_3.
             // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicState2FeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT);
@@ -351,67 +364,74 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME);
             // }
-            // // This extension adds almost all of the remaining pipeline state as dynamic state to help applications further reduce the number of monolithic pipelines they need to create and bind.
-            // if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicState3FeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT);
-            //     if (feature.extendedDynamicState3PolygonMode)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
-            // }
+            // This extension adds almost all of the remaining pipeline state as dynamic state to help applications further reduce the number of monolithic pipelines they need to create and bind.
+            if (imp->isExtensionSupported(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceExtendedDynamicState3FeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT);
+                if (feature.extendedDynamicState3PolygonMode)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
+            }
+            // mesh shading features
+            // Attempting to enable deprecated extension VK_KHR_spirv_1_4, but this extension has been promoted to VK_VERSION_1_2.
+            // Attempting to enable deprecated extension VK_KHR_shader_float_controls, but this extension has been promoted to VK_VERSION_1_2.
+            if (imp->isExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_MESH_SHADER_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceMeshShaderFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT);
+                if (feature.meshShader)
+                {
+                    // in vk1.2 core
+                    //requiredDeviceExtensions.insert(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+                    requiredDeviceExtensions.insert(VK_EXT_MESH_SHADER_EXTENSION_NAME);
+                    // in vk1.2 core
+                    //requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
+            }
+            // support for graphics pipeline libraries
+            // VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT depends on VK_EXT_graphics_pipeline_library
+            // VK_EXT_graphics_pipeline_library depends on VK_KHR_pipeline_library
+            if (imp->isExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT);
+                if (feature.graphicsPipelineLibrary)
+                {
+                    requiredDeviceExtensions.insert(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
+                    requiredDeviceExtensions.insert(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
+            }
+            // variable rate fragment shading
+            // VkPhysicalDeviceFragmentShadingRateFeaturesKHR depends on: VK_KHR_fragment_shading_rate
+            // VK_KHR_fragment_shading_rate depends on: VK_KHR_create_renderpass2
+            // VK_KHR_create_renderpass2 depends on : VK_KHR_multiview and VK_KHR_maintenance2
 
-            // // mesh shading features
-            // if (imp->isExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_MESH_SHADER_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceMeshShaderFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT);
-            //     if (feature.meshShader)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
-            //         requiredDeviceExtensions.insert(VK_EXT_MESH_SHADER_EXTENSION_NAME);
-            //         requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_MESH_SHADER_EXTENSION_NAME);
-            // }
-            // // support for graphics pipeline libraries
-            // // VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT depends on VK_EXT_graphics_pipeline_library
-            // // VK_EXT_graphics_pipeline_library depends on VK_KHR_pipeline_library
-            // if (imp->isExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME) && imp->isExtensionSupported(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT);
-            //     if (feature.graphicsPipelineLibrary)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
-            //         requiredDeviceExtensions.insert(VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME);
-            // }
-            // // variable rate fragment shading
-            // // VkPhysicalDeviceFragmentShadingRateFeaturesKHR depends on: VK_KHR_fragment_shading_rate
-            // // VK_KHR_fragment_shading_rate depends on: VK_KHR_create_renderpass2
-            // // VK_KHR_create_renderpass2 depends on : VK_KHR_multiview and VK_KHR_maintenance2
+            // Attempting to enable deprecated extension VK_KHR_multiview, but this extension has been promoted to VK_VERSION_1_1.
+            // Attempting to enable deprecated extension VK_KHR_create_renderpass2, but this extension has been promoted to VK_VERSION_1_2.
+            // Attempting to enable deprecated extension VK_KHR_maintenance2, but this extension has been promoted to VK_VERSION_1_1.
             // if (imp->isExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_MULTIVIEW_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_MAINTENANCE2_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME))
             // {
             //     auto &feature = imp->requestFeatures<VkPhysicalDeviceFragmentShadingRateFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR);
@@ -431,63 +451,70 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
             // }
-            // // barycentric support in fragment shaders
-            // if (imp->isExtensionSupported(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR);
-            //     if (feature.fragmentShaderBarycentric)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
-            // }
-            // // line rasterization features
-            // if (imp->isExtensionSupported(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceLineRasterizationFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT);
-            //     if (feature.smoothLines)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
-            // }
-            // // advanced blending features
-            // if (imp->isExtensionSupported(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME))
-            // {
-            //     auto &feature = imp->requestFeatures<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT);
-            //     if (feature.advancedBlendCoherentOperations)
-            //     {
-            //         requiredDeviceExtensions.insert(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
-            //     }
-            //     else
-            //     {
-            //         spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
-            //     }
-            // }
-            // else
-            // {
-            //     spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
-            // }
-            // {
-            //     // The request is filling with the capabilities (all on by default)
-            //     auto &vulkan13_features = imp->requestFeatures<VkPhysicalDeviceVulkan13Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
-            //     auto &vulkan12_features = imp->requestFeatures<VkPhysicalDeviceVulkan12Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
-            //     auto &vulkan11_features = imp->requestFeatures<VkPhysicalDeviceVulkan11Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
-            // }
+            // barycentric support in fragment shaders
+            if (imp->isExtensionSupported(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR);
+                if (feature.fragmentShaderBarycentric)
+                {
+                    requiredDeviceExtensions.insert(VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_KHR_FRAGMENT_SHADER_BARYCENTRIC_EXTENSION_NAME);
+            }
+            // line rasterization features
+            // Attempting to enable extension VK_EXT_line_rasterization, but this extension is intended to support specialized functionality used by CAD/CAM applications and it is strongly recommended that it be otherwise avoided.
+            if (imp->isExtensionSupported(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceLineRasterizationFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT);
+                if (feature.smoothLines)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME);
+            }
+            // advanced blending features
+            if (imp->isExtensionSupported(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME))
+            {
+                auto &feature = imp->requestFeatures<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT);
+                if (feature.advancedBlendCoherentOperations)
+                {
+                    requiredDeviceExtensions.insert(VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+                }
+                else
+                {
+                    spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+                }
+            }
+            else
+            {
+                spdlog::warn("[3rd not availabile] {}", VK_EXT_BLEND_OPERATION_ADVANCED_EXTENSION_NAME);
+            }
+            {
+                // The request is filling with the capabilities (all on by default)
+                // If the pNext chain includes a VkPhysicalDeviceVulkan13Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES structure The Vulkan spec states: If the pNext chain includes a VkPhysicalDeviceVulkan13Features structure, then it must not include a VkPhysicalDeviceDynamicRenderingFeatures, VkPhysicalDeviceImageRobustnessFeatures, VkPhysicalDeviceInlineUniformBlockFeatures, VkPhysicalDeviceMaintenance4Features, VkPhysicalDevicePipelineCreationCacheControlFeatures, VkPhysicalDevicePrivateDataFeatures, VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures, VkPhysicalDeviceShaderIntegerDotProductFeatures, VkPhysicalDeviceShaderTerminateInvocationFeatures, VkPhysicalDeviceSubgroupSizeControlFeatures, VkPhysicalDeviceSynchronization2Features, VkPhysicalDeviceTextureCompressionASTCHDRFeatures, or VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures structure
+                auto &vulkan13_features = imp->requestFeatures<VkPhysicalDeviceVulkan13Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
+                
+                // If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES structure The Vulkan spec states: If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VkPhysicalDevice8BitStorageFeatures, VkPhysicalDeviceShaderAtomicInt64Features, VkPhysicalDeviceShaderFloat16Int8Features, VkPhysicalDeviceDescriptorIndexingFeatures, VkPhysicalDeviceScalarBlockLayoutFeatures, VkPhysicalDeviceImagelessFramebufferFeatures, VkPhysicalDeviceUniformBufferStandardLayoutFeatures, VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures, VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures, VkPhysicalDeviceHostQueryResetFeatures, VkPhysicalDeviceTimelineSemaphoreFeatures, VkPhysicalDeviceBufferDeviceAddressFeatures, or VkPhysicalDeviceVulkanMemoryModelFeatures structure 
+                auto &vulkan12_features = imp->requestFeatures<VkPhysicalDeviceVulkan12Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
+                
+                // If the pNext chain includes a VkPhysicalDeviceVulkan11Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES structure The Vulkan spec states: 
+                // If the pNext chain includes a VkPhysicalDeviceVulkan11Features structure, then it must not include a VkPhysicalDevice16BitStorageFeatures, VkPhysicalDeviceMultiviewFeatures, VkPhysicalDeviceVariablePointersFeatures, VkPhysicalDeviceProtectedMemoryFeatures, VkPhysicalDeviceSamplerYcbcrConversionFeatures, or VkPhysicalDeviceShaderDrawParametersFeatures structure
+                auto &vulkan11_features = imp->requestFeatures<VkPhysicalDeviceVulkan11Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
+            }
         }
         return requiredDeviceExtensions;
     };
