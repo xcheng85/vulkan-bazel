@@ -8,6 +8,7 @@
                 "${workspaceFolder}/bazel-vulkan-bazel/external/spdlog/include",
                 "${workspaceFolder}/bazel-vulkan-bazel/external/boost-ext-di/include",
                 "${workspaceFolder}/bazel-vulkan-bazel/external/magic_enum/include",
+                "${workspaceFolder}/bazel-vulkan-bazel/external/vma/include",
                 "${workspaceFolder}"
             ],
             "defines": [],

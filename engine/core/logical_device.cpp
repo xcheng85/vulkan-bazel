@@ -9,6 +9,12 @@
 #define VK_NO_PROTOTYPES // for volk
 #include <volk.h>
 #include <spdlog/spdlog.h>
+
+#define VMA_IMPLEMENTATION // needed for undefined reference
+#define VMA_STATIC_VULKAN_FUNCTIONS 0
+#define VMA_DYNAMIC_VULKAN_FUNCTIONS 0
+#include <vk_mem_alloc.h>
+
 #include "instance.h"
 #include "logical_device.h"
 #include "physical_device.h"
@@ -111,16 +117,81 @@ namespace Engine
                 .pQueueCreateInfos = queueCreateInfos.data(),
                 .enabledExtensionCount = allExts.size(),
                 .ppEnabledExtensionNames = allExts.data(),
-                .pEnabledFeatures = &imp->requestedFeatures()           
-                };
+                .pEnabledFeatures = &imp->requestedFeatures()};
 
             VK_CHECK(vkCreateDevice(imp->getVkHandle(), &createInfo, nullptr, &_handle));
+
+            _logicDeviceQueues.resize(count);
+            for (uint32_t familyIndex = 0; familyIndex < count; familyIndex++)
+            {
+                const auto &queueFamilyProperty = queueFamilyProperties[familyIndex];
+
+                auto isPresentable = imp->isSurfacePresentable(surface->getVkHandle(), familyIndex);
+
+                for (uint32_t queueIndex = 0; queueIndex < queueFamilyProperty.queueCount; queueIndex++)
+                {
+                    // emplace_back vs push_back: save an extra copy or move operatation
+                    // https://en.cppreference.com/w/cpp/container/vector/emplace_back
+                    _logicDeviceQueues[familyIndex].emplace_back(*this, familyIndex, queueFamilyProperty, isPresentable, queueIndex);
+                }
+            }
+
+            VmaVulkanFunctions vkFuncPointers{
+                .vkGetPhysicalDeviceProperties = vkGetPhysicalDeviceProperties,
+                .vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties,
+                .vkAllocateMemory = vkAllocateMemory,
+                .vkFreeMemory = vkFreeMemory,
+                .vkMapMemory = vkMapMemory,
+                .vkUnmapMemory = vkUnmapMemory,
+                .vkFlushMappedMemoryRanges = vkFlushMappedMemoryRanges,
+                .vkInvalidateMappedMemoryRanges = vkInvalidateMappedMemoryRanges,
+                .vkBindBufferMemory = vkBindBufferMemory,
+                .vkBindImageMemory = vkBindImageMemory,
+                .vkGetBufferMemoryRequirements = vkGetBufferMemoryRequirements,
+                .vkGetImageMemoryRequirements = vkGetImageMemoryRequirements,
+                .vkCreateBuffer = vkCreateBuffer,
+                .vkDestroyBuffer = vkDestroyBuffer,
+                .vkCreateImage = vkCreateImage,
+                .vkDestroyImage = vkDestroyImage,
+                .vkCmdCopyBuffer = vkCmdCopyBuffer,
+            };
+
+            VmaAllocatorCreateInfo ci{
+                .physicalDevice = imp->getVkHandle(),
+                .device = _handle,
+                .pVulkanFunctions = &vkFuncPointers,
+                .instance = imp->getInstance()->getVkHandle(),
+            };
+
+            VK_CHECK(vmaCreateAllocator(&ci, &_vmaAllocator));
+
             spdlog::info("<-- VulkanLogicalDevice::VulkanLogicalDevice");
         }
 
         VulkanLogicalDevice::~VulkanLogicalDevice()
         {
             vkDestroyDevice(_handle, nullptr);
+        }
+
+        VulkanLogicalDeviceQueue::VulkanLogicalDeviceQueue(
+            VulkanLogicalDevice &logicDevice,
+            uint32_t familyIndex,
+            VkQueueFamilyProperties properties,
+            bool isPresentable,
+            uint32_t queueIndex) : _familyIndex(familyIndex),
+                                   _properties(properties),
+                                   _isPrensentable(isPresentable),
+                                   _queueIndex(queueIndex)
+        {
+            vkGetDeviceQueue(logicDevice.getVkHandle(), familyIndex, queueIndex, &_handle);
+        }
+
+        VulkanLogicalDeviceQueue::VulkanLogicalDeviceQueue(VulkanLogicalDeviceQueue &&other) noexcept
+        {
+        }
+
+        VulkanLogicalDeviceQueue::~VulkanLogicalDeviceQueue()
+        {
         }
     }
 }

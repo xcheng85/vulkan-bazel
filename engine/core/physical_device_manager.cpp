@@ -57,11 +57,11 @@ namespace Engine
 
                 if (imp->properties().deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
                 {
-                    const auto &queueCount = imp->queueFamilyProperties().size();
-                    for (uint32_t qId = 0; qId < queueCount; qId++)
+                    const auto &queueFamilyCount = imp->queueFamilyProperties().size();
+                    for (uint32_t familyId = 0; familyId < queueFamilyCount; familyId++)
                     {
                         // device support surface present
-                        if (imp->isSurfacePresentable(surface->getVkHandle(), qId))
+                        if (imp->isSurfacePresentable(surface->getVkHandle(), familyId))
                         {
                             return pDevice.get();
                         }

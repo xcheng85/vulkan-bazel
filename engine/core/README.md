@@ -142,6 +142,13 @@ be used in the pNext chain of VkDeviceCreateInfo to selectively enable these fea
 2. Some Device features to mention:
 VkPhysicalDeviceHostQueryResetFeatures
 
+## Step5: Queues of the selected logic device
+
+Multiple Queue families, 
+
+multiple queues in a family
+
+find family which support prensenting to the surface
 
 
 ## Step5: RenderContext for a window/canvas

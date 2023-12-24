@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <boost/di.hpp>
+#include <vk_mem_alloc.h>
 #include "utils.h"
 
 using namespace std;
@@ -50,7 +51,7 @@ namespace Engine
         };
 
         static auto REQUIRED_GPU_DEVICE_EXTS = [] {};
-
+        class VulkanLogicalDeviceQueue;
         class VulkanLogicalDevice : public ILogicalDevice
         {
         public:
@@ -58,9 +59,35 @@ namespace Engine
                             std::shared_ptr<IPhysicalDeviceManager>,
                             std::shared_ptr<ISurface>,
                             std::shared_ptr<ILogicDeviceSettings>,
-                            std::shared_ptr<IPhysicalDeviceFeatureRequester>
-                            );
+                            std::shared_ptr<IPhysicalDeviceFeatureRequester>);
             virtual ~VulkanLogicalDevice();
+
+        private:
+            std::vector<std::vector<VulkanLogicalDeviceQueue>> _logicDeviceQueues;
+            VmaAllocator _vmaAllocator;
+        };
+
+        class VulkanLogicalDeviceQueue : public VulkanObject<VkQueue, VK_OBJECT_TYPE_QUEUE>
+        {
+        public:
+            VulkanLogicalDeviceQueue(VulkanLogicalDevice &,
+                                     uint32_t familyIndex,
+                                     VkQueueFamilyProperties,
+                                     bool isPresentable,
+                                     uint32_t queueIndex);
+            // following two are needed for emplace_back.
+            VulkanLogicalDeviceQueue(const VulkanLogicalDeviceQueue &) = default;
+            VulkanLogicalDeviceQueue(VulkanLogicalDeviceQueue &&other) noexcept;
+            virtual ~VulkanLogicalDeviceQueue();
+
+        private:
+            uint32_t _familyIndex;
+
+            uint32_t _queueIndex;
+
+            bool _isPrensentable;
+
+            VkQueueFamilyProperties _properties;
         };
     }
 };

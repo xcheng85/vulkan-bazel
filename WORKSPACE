@@ -61,6 +61,13 @@ git_repository(
     tag = "v1.14.0"
 )
 
+git_repository(
+    name = "vma",
+    build_file = "@//third_party/vma:vma.BUILD",
+    remote = "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git",
+    tag = "v3.0.1"
+)
+
 http_archive(
     name = "magic_enum",
     build_file = "@//third_party/magic_enum:magic_enum.BUILD",
