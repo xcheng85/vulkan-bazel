@@ -13,6 +13,8 @@
 #define VMA_IMPLEMENTATION // needed for undefined reference
 #define VMA_STATIC_VULKAN_FUNCTIONS 0
 #define VMA_DYNAMIC_VULKAN_FUNCTIONS 0
+#define VMA_VULKAN_VERSION 1003000 // Vulkan 1.3
+
 #include <vk_mem_alloc.h>
 
 #include "instance.h"
@@ -163,13 +165,33 @@ namespace Engine
                 .instance = imp->getInstance()->getVkHandle(),
             };
 
+            // device extensions as pre-req: VK_KHR_get_memory_requirements2, VK_KHR_dedicated_allocation
+            if (imp->isExtensionSupported(VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME))
+            {
+                ci.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+                vkFuncPointers.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2KHR;
+                vkFuncPointers.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2KHR;
+            }
+            // device extensions as pre-req + vk > 1.0
+            if (imp->isExtensionSupported(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME))
+            {
+                ci.flags |= VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
+                vkFuncPointers.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
+            }
+            if (imp->isExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
+            {
+                ci.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+            }
             VK_CHECK(vmaCreateAllocator(&ci, &_vmaAllocator));
-
             spdlog::info("<-- VulkanLogicalDevice::VulkanLogicalDevice");
         }
 
         VulkanLogicalDevice::~VulkanLogicalDevice()
         {
+            VmaTotalStatistics stats;
+            vmaCalculateStatistics(_vmaAllocator, &stats);
+            spdlog::info("Total device memory allocated: {} bytes.", stats.total.statistics.blockBytes);
+            vmaDestroyAllocator(_vmaAllocator);
             vkDestroyDevice(_handle, nullptr);
         }
 

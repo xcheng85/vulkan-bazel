@@ -151,10 +151,19 @@ multiple queues in a family
 find family which support prensenting to the surface
 
 
-## Step5: RenderContext for a window/canvas
+## Step6: RenderContext for a window/canvas
 
 depends: 
 1. A logic device
 
 SwapChain: vector of images
 CommandBuffer
+
+
+## VMA: Vulkan Memory Allocator
+
+1. VMA_ALLOCATOR_CREATE_KHR_BIND_MEMORY2_BIT: only for vk1.0
+
+2. VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT:
+need device extension
+VK_EXT_MEMORY_BUDGET_EXTENSION_NAME

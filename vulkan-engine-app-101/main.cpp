@@ -184,7 +184,7 @@ public:
             // {
             //     spdlog::warn("[3rd not availabile] {}", VK_KHR_16BIT_STORAGE_EXTENSION_NAME);
             // }
-            
+
             // // float16 int8
             // if (imp->isExtensionSupported(VK_KHR_16BIT_STORAGE_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME) && imp->isExtensionSupported(VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME))
             // {
@@ -390,10 +390,10 @@ public:
                 if (feature.meshShader)
                 {
                     // in vk1.2 core
-                    //requiredDeviceExtensions.insert(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+                    // requiredDeviceExtensions.insert(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
                     requiredDeviceExtensions.insert(VK_EXT_MESH_SHADER_EXTENSION_NAME);
                     // in vk1.2 core
-                    //requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
+                    // requiredDeviceExtensions.insert(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
                 }
                 else
                 {
@@ -507,11 +507,11 @@ public:
                 // The request is filling with the capabilities (all on by default)
                 // If the pNext chain includes a VkPhysicalDeviceVulkan13Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES structure The Vulkan spec states: If the pNext chain includes a VkPhysicalDeviceVulkan13Features structure, then it must not include a VkPhysicalDeviceDynamicRenderingFeatures, VkPhysicalDeviceImageRobustnessFeatures, VkPhysicalDeviceInlineUniformBlockFeatures, VkPhysicalDeviceMaintenance4Features, VkPhysicalDevicePipelineCreationCacheControlFeatures, VkPhysicalDevicePrivateDataFeatures, VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures, VkPhysicalDeviceShaderIntegerDotProductFeatures, VkPhysicalDeviceShaderTerminateInvocationFeatures, VkPhysicalDeviceSubgroupSizeControlFeatures, VkPhysicalDeviceSynchronization2Features, VkPhysicalDeviceTextureCompressionASTCHDRFeatures, or VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures structure
                 auto &vulkan13_features = imp->requestFeatures<VkPhysicalDeviceVulkan13Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
-                
-                // If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES structure The Vulkan spec states: If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VkPhysicalDevice8BitStorageFeatures, VkPhysicalDeviceShaderAtomicInt64Features, VkPhysicalDeviceShaderFloat16Int8Features, VkPhysicalDeviceDescriptorIndexingFeatures, VkPhysicalDeviceScalarBlockLayoutFeatures, VkPhysicalDeviceImagelessFramebufferFeatures, VkPhysicalDeviceUniformBufferStandardLayoutFeatures, VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures, VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures, VkPhysicalDeviceHostQueryResetFeatures, VkPhysicalDeviceTimelineSemaphoreFeatures, VkPhysicalDeviceBufferDeviceAddressFeatures, or VkPhysicalDeviceVulkanMemoryModelFeatures structure 
+
+                // If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES structure The Vulkan spec states: If the pNext chain includes a VkPhysicalDeviceVulkan12Features structure, then it must not include a VkPhysicalDevice8BitStorageFeatures, VkPhysicalDeviceShaderAtomicInt64Features, VkPhysicalDeviceShaderFloat16Int8Features, VkPhysicalDeviceDescriptorIndexingFeatures, VkPhysicalDeviceScalarBlockLayoutFeatures, VkPhysicalDeviceImagelessFramebufferFeatures, VkPhysicalDeviceUniformBufferStandardLayoutFeatures, VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures, VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures, VkPhysicalDeviceHostQueryResetFeatures, VkPhysicalDeviceTimelineSemaphoreFeatures, VkPhysicalDeviceBufferDeviceAddressFeatures, or VkPhysicalDeviceVulkanMemoryModelFeatures structure
                 auto &vulkan12_features = imp->requestFeatures<VkPhysicalDeviceVulkan12Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
-                
-                // If the pNext chain includes a VkPhysicalDeviceVulkan11Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES structure The Vulkan spec states: 
+
+                // If the pNext chain includes a VkPhysicalDeviceVulkan11Features structure, then it must not include a VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES structure The Vulkan spec states:
                 // If the pNext chain includes a VkPhysicalDeviceVulkan11Features structure, then it must not include a VkPhysicalDevice16BitStorageFeatures, VkPhysicalDeviceMultiviewFeatures, VkPhysicalDeviceVariablePointersFeatures, VkPhysicalDeviceProtectedMemoryFeatures, VkPhysicalDeviceSamplerYcbcrConversionFeatures, or VkPhysicalDeviceShaderDrawParametersFeatures structure
                 auto &vulkan11_features = imp->requestFeatures<VkPhysicalDeviceVulkan11Features>(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
             }
@@ -524,12 +524,13 @@ class VulkanApplication : public Application
 {
 public:
     VulkanApplication(
-        std::unique_ptr<ILogicalDevice> pDeviceManager
+        std::unique_ptr<ILogicalDevice> &&logicalDevice
         // std::unique_ptr<IContext> ctx
         )
         : Application(
               // std::move(ctx)
-          )
+              ),
+          _logicalDevice{std::move(logicalDevice)}
     {
         info("--> VulkanApplication::VulkanApplication");
         // initSync();
@@ -538,6 +539,7 @@ public:
         // initPipeline();
         // initFramebuffer();
         // recordCommandBuffers();
+
         info("<-- VulkanApplication::VulkanApplication");
     };
 
@@ -1084,6 +1086,8 @@ protected:
         // // device is clean in the wrapper class
     }
 
+    std::unique_ptr<ILogicalDevice> _logicalDevice;
+
     // // rendering process waits for swap chain image
     // VkSemaphore acquired_image_ready;
 
@@ -1147,6 +1151,8 @@ int main()
 
     std::initializer_list<std::string> deviceExts = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, // The VK_KHR_swapchain extension is the device-level companion to the VK_KHR_surface extension
+        VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
+        VK_EXT_MEMORY_BUDGET_EXTENSION_NAME,
     };
 
     auto core_module = [validationLayers, instanceExts, deviceExts]
