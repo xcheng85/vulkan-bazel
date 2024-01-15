@@ -14,7 +14,8 @@ using namespace std::chrono_literals;
 using namespace std::complex_literals;
 
 // functor for thread based approach
-struct CriticalSection {
+struct CriticalSection
+{
     std::mutex mut;
 };
 
@@ -46,9 +47,17 @@ public:
     {
     }
 
-    void operator()(CriticalSection& c)
+    void run() {
+        spdlog::info("run: {}", callId);
+        // thread local storage
+        callId++;
+    }
+
+    void operator()(CriticalSection &c)
     {
-        std::lock_guard<std::mutex> lockGuard(c.mut);
+        // std::lock_guard<std::mutex> lockGuard(c.mut);
+        //  same as previous, c++17
+        std::scoped_lock lock(c.mut);
         std::this_thread::sleep_for(200ms);
         spdlog::info("Render Pass: {} done!", _name);
     }
@@ -129,11 +138,16 @@ public:
     friend auto &NumRenderPass(RenderPass &p);
     friend const auto &NumRenderPass(const RenderPass &p);
 
+    // thread local storage
+    static thread_local size_t callId;
 private:
     std::string _name;
     size_t _numPasses{0};
     bool _debug{true};
 };
+
+// initialize static class member
+thread_local size_t RenderPass::callId = 0; 
 
 template <typename F, typename... Args>
 inline auto Async(F &&f, Args &&...args)
@@ -146,6 +160,8 @@ auto f()
     std::this_thread::sleep_for(1s);
     return 10;
 }
+
+// mutli-threading buffer
 
 int main()
 {
@@ -168,11 +184,27 @@ int main()
     spdlog::info(c.real());
 
     // synchronization using lock
-    CriticalSection c1;
+    CriticalSection c1; 
+    // functor copy into internal storage for the thread
     std::thread t1(RenderPass("rp1", 1, true), std::ref(c1));
     std::thread t2(RenderPass("rp2", 2, false), std::ref(c1));
     std::thread t3(RenderPass("rp3", 3, true), std::ref(c1));
+
+    // avoid functor copy
+    RenderPass rp4{"rp4", 1, true};
+    std::thread t4(std::ref(rp4), std::ref(c1));
+
+    // thread + member function
+    std::thread t5(&RenderPass::run, &rp4);
+    std::thread t6(&RenderPass::run, &rp4);
+
     t1.join();
     t2.join();
     t3.join();
+    t4.join();
+    t5.join();
+    t6.join();
+
+
+    // reader-writer lock: majority read and few writes
 }

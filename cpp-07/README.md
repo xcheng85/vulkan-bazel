@@ -32,8 +32,14 @@ cache miss
 1. lamda: compiler create closure class (functor equivilant)
 2. functor
 3. inline function
+4. member function of a class instance
+
+## Join vs Detach
+Join: wait group in go 
 
 ## functor arguments
+argument passed to thread are copy, std::ref to avoid copy
+
 lvalue must be wrapped std::ref()
 
 ## When need to consider synchorinzation
@@ -45,7 +51,20 @@ Lock: avoid deadlock
 
 all the locks are using templates
 
-1. lock_guard
-2. unique_lock
-3. shared_lock
-4. scoped_lock: advanced version of lock_guard: variadic mutexes
+1. lock_guard: for write, exclusive access
+2. unique_lock:
+3. shared_lock: multiple threads read
+4. scoped_lock: advanced version of lock_guard: variadic mutexes, exclusive access
+
+## Mutiple thread read and few thread write case
+shared_timed_mutex + shared_lock
+
+## how to retrieve result in thread-based api ? 
+functor + class member + class get api
+
+## Singeltion in multi-threading envrionment
+std::call_once + std::once_flag
+
+## lock multiple locks in one call ? 
+1. std::lock
+2. c++17: scoped_lock
