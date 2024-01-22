@@ -8,4 +8,5 @@ cc_binary(
         "//third_party/spdlog",
     ],
     copts = ["--std=c++23"],
+    linkopts = ["-pg"]
 )
