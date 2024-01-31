@@ -97,6 +97,16 @@
         "__hash_table": "cpp",
         "__tree": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
-    }
+        "stack": "cpp",
+        "__locale": "cpp",
+        "ios": "cpp",
+        "expected": "cpp",
+        "__tuple": "cpp",
+        "__config": "cpp",
+        "__bit_reference": "cpp",
+        "__functional_03": "cpp",
+        "__string": "cpp",
+        "__functional_base": "cpp"
+    },
+    "C_Cpp.default.cppStandard": "c++23"
 }

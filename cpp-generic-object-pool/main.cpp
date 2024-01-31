@@ -41,6 +41,9 @@ private:
 
 int main()
 {
+    core::Vector3f axis{};
+    std::cout << axis << std::endl;
+
     // normally done in ioc container
     BrickPool brickPool;
     // performance measurement

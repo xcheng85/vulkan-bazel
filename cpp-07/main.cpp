@@ -2,6 +2,7 @@
 #include <memory>
 #include <chrono>
 #include <complex>
+#include <exception>
 #include <algorithm>
 #include <future>
 #include <iostream>
@@ -47,10 +48,32 @@ public:
     {
     }
 
-    void run() {
+    void run()
+    {
         spdlog::info("run: {}", callId);
         // thread local storage
         callId++;
+        this->_numPasses++;
+    }
+
+    // mimic function which throws exception
+    void throwSomeExeption()
+    {
+        throw std::runtime_error{"throwSomeExeption"};
+    }
+
+    // wrapper to notify the caller main thread
+    // c++11
+    void throwSomeExeptionWrapper(std::exception_ptr &err)
+    {
+        try
+        {
+           throwSomeExeption();
+        }
+        catch(const std::exception& e)
+        {
+            err = std::current_exception();
+        }
     }
 
     void operator()(CriticalSection &c)
@@ -140,14 +163,26 @@ public:
 
     // thread local storage
     static thread_local size_t callId;
+
 private:
     std::string _name;
     size_t _numPasses{0};
     bool _debug{true};
 };
 
+// best member accessor pattern
+inline auto &NumRenderPass(RenderPass &p)
+{
+    return p._numPasses;
+};
+
+inline const auto &NumRenderPass(const RenderPass &p)
+{
+    return p._numPasses;
+};
+
 // initialize static class member
-thread_local size_t RenderPass::callId = 0; 
+thread_local size_t RenderPass::callId = 0;
 
 template <typename F, typename... Args>
 inline auto Async(F &&f, Args &&...args)
@@ -184,7 +219,7 @@ int main()
     spdlog::info(c.real());
 
     // synchronization using lock
-    CriticalSection c1; 
+    CriticalSection c1;
     // functor copy into internal storage for the thread
     std::thread t1(RenderPass("rp1", 1, true), std::ref(c1));
     std::thread t2(RenderPass("rp2", 2, false), std::ref(c1));
@@ -198,13 +233,30 @@ int main()
     std::thread t5(&RenderPass::run, &rp4);
     std::thread t6(&RenderPass::run, &rp4);
 
+    // retrieve result from thread
+    // create new instance and ref it in the thread
+    RenderPass rp5{"rp5", 2, true};
+    std::jthread t7(&RenderPass::run, &rp5);
+
+    // exception hander
+    std::exception_ptr error;
+    std::jthread t8(&RenderPass::throwSomeExeptionWrapper, &rp5, std::ref(error));
+
     t1.join();
     t2.join();
     t3.join();
     t4.join();
     t5.join();
     t6.join();
+    t7.join();
+    t8.join();
 
+    // retrieving result, reference is the key
+    spdlog::info("NumRenderPass: {}", NumRenderPass(rp5));
 
+    if(error){
+        spdlog::info("captured exception in thread");
+        std::rethrow_exception(error);
+    }
     // reader-writer lock: majority read and few writes
 }

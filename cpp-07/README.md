@@ -45,6 +45,15 @@ lvalue must be wrapped std::ref()
 ## When need to consider synchorinzation
 mutable shared data members
 
+## Pre-requisite of Atomic Template
+### Trivially copyable Type
+1. Trivially copyable class
+
+## Atomic Template vs Mutex vs Lock
+1. Atomic: no explicit synchronization code
+2. Mutex: explicit 
+3. Lock: RAII idom + Mutex
+
 ## Mutex and Lock
 Lock is the RAII idiom of mutex: release mutex in the dtor
 Lock: avoid deadlock
@@ -60,7 +69,13 @@ all the locks are using templates
 shared_timed_mutex + shared_lock
 
 ## how to retrieve result in thread-based api ? 
-functor + class member + class get api
+1. functor + class member + class get api
+2. future
+
+## handling exception in mult-threading env ? 
+1. each thread must handle its own exception
+2. main thread pass in a exception_ptr as reference
+3. main thread rethrow exception
 
 ## Singeltion in multi-threading envrionment
 std::call_once + std::once_flag

@@ -3,6 +3,7 @@
 // for std::allocator
 #include <memory>
 #include <vector>
+#include <iostream>
 
 namespace core
 {
@@ -89,4 +90,62 @@ namespace core
         std::size_t _newChunkSize{initialChunkSize}; // aggressive
         Allocator _allocator;
     };
+
+    template <typename T, std::size_t CHANNELS = 3>
+    class Vector final
+    {
+    public:
+        Vector()
+        {
+            std::cout << "Vector" << CHANNELS << std::endl;
+            _data.resize(CHANNELS);
+        }
+
+        Vector(const Vector &src) = default;
+        Vector &operator=(const Vector &src) = default;
+
+        Vector(Vector &&src) noexcept
+        {
+            _data = std::move(src._data);
+        }
+
+        Vector &operator=(Vector &&src) noexcept
+        {
+            _data = std::move(src._data);
+            return *this;
+        }
+
+        Vector &operator+(const Vector &src) noexcept
+        {
+            assert(this->_data.size() == src._data.size());
+            // loop vector
+            for (auto i = 0u; i < _data.size(); ++i)
+            {
+                this->_data[i] = src._data[i];
+            }
+            return *this;
+        }
+        inline decltype(auto) get(size_t i) const
+        {
+            // check bound
+            return _data.at(i);
+        }
+
+    private:
+        std::vector<T> _data;
+    };
+
+    using Vector3f = Vector<float, 3>;
+    using Vector3i = Vector<int, 3>;
+    using Vector3d = Vector<double, 3>;
+
+    template <typename T, std::size_t CHANNELS = 3>
+    std::ostream &operator<<(std::ostream &ostr, const Vector<T, CHANNELS> &v)
+    {
+        for (auto i = 0u; i < CHANNELS; ++i)
+        {
+            ostr << v.get(i) << std::endl;
+        }
+        return ostr;
+    }
 }

@@ -14,7 +14,7 @@
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c23",
-            "cppStandard": "gnu++23",
+            "cppStandard": "c++23",
             "intelliSenseMode": "linux-gcc-x64"
         }
     ],
