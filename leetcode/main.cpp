@@ -3,6 +3,7 @@
 #include "./mst/1135.h"
 #include "./topologysort/207.h"
 #include "./shortestpath/787.h"
+#include "./segmenttree/st.h"
 
 int main()
 {
@@ -36,5 +37,10 @@ int main()
         0, 2, 1));
         spdlog::info(sln.findCheapestPrice(3, {{0, 1, 100}, {1,2,100},{0,2,500}}, 
         0, 2, 0));
+    }
+
+    {
+        st::SegmentTree st({1,3,5,7,9,11}, 0, 5);
+        cout << st << endl;
     }
 }
