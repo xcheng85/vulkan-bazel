@@ -3,7 +3,7 @@
 #include "./mst/1135.h"
 #include "./topologysort/207.h"
 #include "./shortestpath/787.h"
-#include "./segmenttree/st.h"
+#include "./segmenttree/iterative.h"
 
 int main()
 {
@@ -31,16 +31,20 @@ int main()
     {
         leetcode_787::Solution sln;
         // n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], src = 0, dst = 3, k = 1
-        spdlog::info(sln.findCheapestPrice(4, {{0, 1, 100}, {1,2,100},{2,0,100},{1,3,600},{2,3,200}}, 
-        0, 3, 1));
-        spdlog::info(sln.findCheapestPrice(3, {{0, 1, 100}, {1,2,100},{0,2,500}}, 
-        0, 2, 1));
-        spdlog::info(sln.findCheapestPrice(3, {{0, 1, 100}, {1,2,100},{0,2,500}}, 
-        0, 2, 0));
+        spdlog::info(sln.findCheapestPrice(4, {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}},
+                                           0, 3, 1));
+        spdlog::info(sln.findCheapestPrice(3, {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}},
+                                           0, 2, 1));
+        spdlog::info(sln.findCheapestPrice(3, {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}},
+                                           0, 2, 0));
     }
 
     {
-        st::SegmentTree st({1,3,5,7,9,11}, 0, 5);
+        st::IterativeMinMax st({2, 6, 7, 5, 18, 86, 54, 2});
         cout << st << endl;
+        cout << st.range_query(2, 7) << endl;
+
+        st.update(3, 90);
+        cout << st.range_query(2, 6) << endl;
     }
 }
