@@ -4,6 +4,7 @@
 #include "./topologysort/207.h"
 #include "./shortestpath/787.h"
 #include "./segmenttree/iterative.h"
+#include "./segmenttree/MaxSubarraySum.h"
 
 int main()
 {
@@ -46,5 +47,10 @@ int main()
 
         st.update(3, 90);
         cout << st.range_query(2, 6) << endl;
+    }
+
+    {
+        MaxSubarraySum::MaxSubarraySum st({1, 3, -4, 5, -2 });
+        cout << st.maxSubarraySum(0, 2) << endl;
     }
 }
