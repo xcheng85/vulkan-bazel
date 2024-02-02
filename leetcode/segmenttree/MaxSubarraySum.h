@@ -6,6 +6,9 @@
 
 using namespace std;
 
+// dfs to build and query
+//
+
 namespace MaxSubarraySum
 {
     struct Prop
@@ -14,6 +17,14 @@ namespace MaxSubarraySum
         int maxPrefixsum{numeric_limits<int>::min()};
         int maxSuffixsum{numeric_limits<int>::min()};
         int maxSum{numeric_limits<int>::min()};
+
+        // for struct weird
+        friend ostream &
+        operator<<(ostream &os, Prop &st)
+        {
+            os << format("Min {}, Max {}", st.sum, st.maxSum) << endl;
+            return os;
+        }
     };
 
     class MaxSubarraySum
@@ -21,16 +32,26 @@ namespace MaxSubarraySum
     public:
         // n + n - 1
         // 2 * n to cover both odd and even
-        MaxSubarraySum(const vector<int> &&input) : _tree(2 * input.size()), _input(std::move(input))
+        MaxSubarraySum(const vector<int> &&input) : _tree(2 * input.size()), _input(std::move(input)),
+                                                    _treeIterative(2 * input.size())
         {
             // perfect forwarding
-            build(std::forward<decltype(input)>(input));
+            // build(std::forward<decltype(input)>(input));
+            build();
+            // buildUtils(0, _input.size() - 1, 1);
+
+            // for (int i = 0; i < _tree.size(); i++)
+            // {
+            //     // cout << i << ": " <<  _tree[i] << "-" << _treeIterative[i] << "\n" ;
+            //     cout << i << ":" << _tree[i] << "\n";
+            //     cout << i << ":" << _treeIterative[i] << "\n";
+            // }
         }
 
         // query method
         auto maxSubarraySum(int left, int right)
         {
-            // 
+            //
             auto startNodeIndex = 1;
             return queryUtil(0, _input.size() - 1, left, right, startNodeIndex).maxSum;
         }
@@ -41,13 +62,26 @@ namespace MaxSubarraySum
 
     protected:
         // for subclass to tweak behavior
-        virtual void build(const vector<int> &&input)
+        virtual void build()
         {
-            const auto n = input.size();
+            const auto n = _input.size();
             // leaf
-            for (int i = 0; i < n; i++)
+            // wrong for the odd input !
+            if (n % 2 == 0)
             {
-                _tree[n + i] = {input[i], input[i], input[i], input[i]};
+                for (int i = 0; i < n; i++)
+                {
+                    _tree[n + i] = {_input[i], _input[i], _input[i], _input[i]};
+                }
+            }
+            else
+            {
+                for (int i = 2; i < n; i++)
+                {
+                    _tree[n + i - 2] = {_input[i], _input[i], _input[i], _input[i]};
+                }
+                _tree[2 * n - 2] = {_input[0], _input[0], _input[0], _input[0]};
+                _tree[2 * n - 1] = {_input[1], _input[1], _input[1], _input[1]};
             }
 
             // internal nodes
@@ -56,6 +90,28 @@ namespace MaxSubarraySum
             {
                 _tree[i] = merge(_tree[2 * i], _tree[2 * i + 1]);
             }
+        }
+
+        // Builds the Segment tree recursively
+        // post-traversal DFS
+        void buildUtils(int start, int end, int nodeIndex)
+        {
+            cout << format("{} - {}: {}\n", start, end, nodeIndex);
+            /* Leaf Node */
+            if (start == end)
+            {
+                _tree[nodeIndex].sum = _input[start];
+                _tree[nodeIndex].maxSuffixsum = _input[start];
+                _tree[nodeIndex].maxPrefixsum = _input[start];
+                _tree[nodeIndex].maxSum = _input[start];
+                return;
+            }
+
+            int mid = (start + end) / 2;
+            buildUtils(start, mid, 2 * nodeIndex);
+            buildUtils(mid + 1, end, 2 * nodeIndex + 1);
+
+            _tree[nodeIndex] = merge(_tree[2 * nodeIndex], _tree[2 * nodeIndex + 1]);
         }
 
         // Returns Parent Node after merging its left and right child
@@ -120,6 +176,7 @@ namespace MaxSubarraySum
 
     private:
         vector<Prop> _tree;
+        vector<Prop> _treeIterative;
         const vector<int> &&_input;
     };
 
@@ -132,9 +189,9 @@ namespace MaxSubarraySum
     //     return os;
     // }
 
-    // inline ostream &operator<<(ostream &os, const Prop &st)
+    // inline ostream &operator<<(ostream &os, Prop st)
     // {
-    //     cout << format("Min {}, Max {}", st.min, st.max) << endl;
+    //     os << format("Min {}, Max {}", st.sum, st.maxSum) << endl;
     //     return os;
     // }
 }
