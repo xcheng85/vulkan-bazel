@@ -5,6 +5,7 @@
 #include "./shortestpath/787.h"
 #include "./segmenttree/iterative.h"
 #include "./segmenttree/MaxSubarraySum.h"
+#include "./segmenttree/lis.h"
 
 int main()
 {
@@ -52,5 +53,10 @@ int main()
     {
         MaxSubarraySum::MaxSubarraySum st({1, 3, -4, 5, -2 });
         cout << st.maxSubarraySum(0, 2) << endl;
+    }
+
+    {
+        st::LIS lis({5, 1, 3, 9});
+        cout << lis.MaxLIS() << endl;
     }
 }
