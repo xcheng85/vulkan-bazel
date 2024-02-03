@@ -7,6 +7,7 @@
 #include "./segmenttree/MaxSubarraySum.h"
 #include "./segmenttree/lis.h"
 #include "./segmenttree/numlis.h"
+#include "./segmenttree/KSubarrayMax.h"
 
 int main()
 {
@@ -64,5 +65,11 @@ int main()
     {
         st::NumLISOccurance lis({1, 3, 5, 4, 7});
         cout << lis.MaxLISOccurance() << endl;
+    }
+
+    {
+        st::KSubarrayMax lis({18, 5, 10, 7, 9, 4, 15,
+                  12, 90, 13}, 4);
+        lis.run();
     }
 }
