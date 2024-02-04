@@ -8,9 +8,17 @@
 #include "./segmenttree/lis.h"
 #include "./segmenttree/numlis.h"
 #include "./segmenttree/KSubarrayMax.h"
+#include "./segmenttree/PriceRangeQuery.h"
+#include "./trie/139.h"
 
 int main()
 {
+    {
+        leetcode_139::Solution sln;
+        vector i{"leet"s, "code"s};
+        cout << sln.wordBreak("leetcode", i) << endl;
+    }
+    
     {
         leetcode_886::Solution sln;
         // uniform init
@@ -69,7 +77,17 @@ int main()
 
     {
         st::KSubarrayMax lis({18, 5, 10, 7, 9, 4, 15,
-                  12, 90, 13}, 4);
+                              12, 90, 13},
+                             4);
         lis.run();
+    }
+
+    {
+        vector<st::PriceRangeQuery::InputProp> input({{24, 6}, {30, 8}, {21, 7}});
+        st::PriceRangeQuery st(input);
+
+        vector<std::pair<int, int>> q(
+            {{10, 24}, {20, 30}});
+        st.runQueries(q);
     }
 }
