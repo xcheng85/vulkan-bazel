@@ -10,15 +10,51 @@
 #include "./segmenttree/KSubarrayMax.h"
 #include "./segmenttree/PriceRangeQuery.h"
 #include "./trie/139.h"
+#include "./priority_queue/last_element_remain.h"
+#include "./bst/sum_k_smallest.h"
 
 int main()
 {
+    {
+        sum_k_smallest::BST_Iterative<int> bst;
+        bst.Insert({50, 30, 20, 40, 70, 60, 80});
+        cout << bst;
+        {
+            auto [current, parent] = bst.Search(31);
+            if (current.has_value())
+            {
+                cout << current.value()->value << "\n";
+            }
+            else
+            {
+                cerr << "no 31\n";
+            }
+        }
+
+        {
+            auto [current, parent] = bst.Search(30);
+            if (current.has_value())
+            {
+                cout << current.value()->value << "\n";
+            }
+            else
+            {
+                cerr << "no 31\n";
+            }
+        }
+
+        bst.deleteNode(80);
+    }
+    {
+        last_element_remain::Solution sln;
+        cout << sln.lastElementRemain({3, 5, 2, 7}) << endl;
+    }
     {
         leetcode_139::Solution sln;
         vector i{"leet"s, "code"s};
         cout << sln.wordBreak("leetcode", i) << endl;
     }
-    
+
     {
         leetcode_886::Solution sln;
         // uniform init
