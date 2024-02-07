@@ -13,7 +13,9 @@ namespace sum_k_smallest
 {
     using namespace std;
     // default value for template
+    // T must support operator<<
     template <typename T = int>
+        requires requires(T x) { cout << x; }
     class BST_Iterative
     {
     public:
@@ -23,8 +25,9 @@ namespace sum_k_smallest
             unique_ptr<Node> left;
             unique_ptr<Node> right;
 
-            ~Node() {
-                cout << "dtor\n";
+            ~Node()
+            {
+                cout << "dtor: " << value << "\n";
             }
         };
         BST_Iterative()
@@ -136,25 +139,74 @@ namespace sum_k_smallest
             // optional<Node *> node = p.first;
             // optional<Node *> parent = p.parent;
             assert(p.first.has_value());
-            Node* node = p.first.value();
+            Node *node = p.first.value();
             // parent == nullptr, root
-            Node* parent = nullptr;
-            if(p.second.has_value()) {
+            Node *parent = nullptr;
+            bool isLeft;
+            if (p.second.has_value())
+            {
                 parent = p.second.value();
+                if (parent->left.get() == node)
+                {
+                    isLeft = true;
+                }
+                else
+                {
+                    isLeft = false;
+                }
             }
-            // leaf node
+            // case 1:  leaf node
             if (!node->left && !node->right)
             {
-                if(parent) {
-                    if(parent->left.get() == node) {
-                        parent->left.reset(nullptr); 
+                if (parent)
+                {
+                    isLeft ? parent->left.reset(nullptr) : parent->right.reset(nullptr);
+                }
+                else
+                {
+                    // it is the last element in the bst and it is root
+                    _root.reset(nullptr);
+                }
+            }
+            else if (!node->left || !node->right)
+            {
+                auto remain = node->left ? move(node->left) : move(node->right);
+                // case2: internal node has one child
+                if (parent)
+                {
+                    if (isLeft)
+                    {
+                        parent->left = move(remain);
                     }
-                    else if (parent->right.get() == node) {
-                        parent->right.reset(nullptr); 
-                    } else {
-                        assert(false);
+                    else
+                    {
+                        parent->right = move(remain);
                     }
                 }
+                else
+                {
+                    // update root
+                    _root = move(remain);
+                }
+            }
+            else
+            {
+                // case 3:
+                Node *inorderSuccessorParent = node;
+                // Find inorder successor of node
+                Node *inorderSuccessor = node->right.get();
+                while (inorderSuccessor->left != nullptr)
+                {
+                    inorderSuccessorParent = inorderSuccessor;
+                    inorderSuccessor = inorderSuccessor->left.get();
+                }
+                // there is no left successor, 
+                // the node->right is the one to replace node.
+                if (inorderSuccessorParent == node)
+                    succParent->left = succ->right;
+
+                else
+                    succParent->right = succ->right;
             }
         }
 

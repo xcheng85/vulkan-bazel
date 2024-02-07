@@ -8,34 +8,18 @@
 
 using namespace std;
 
-// string prefix match + recursive
-// trie ds
+// tries + list
 
-// how to use oop for trie
+// node in tries: pointer
 
-// root
+// random delete
+// order container: deque, map with key
 
-// each node
-
-// a field to indicate leaf or internal
-
-// operator overload
-
-// memory overheadc
-
-// behavior of trie
-
-// 1. insert word
-
-// 2. search prefix
-
-namespace leetcode_139
+namespace uniqueUrl
 {
     class Trie
     {
     public:
-        constexpr static size_t ALPHABET_SIZE = 26;
-        // RAII
         struct Node
         {
             // key is offset
@@ -43,15 +27,6 @@ namespace leetcode_139
             bool isLeaf;
 
             Node() : isLeaf{false}
-            {
-                // for(size_t i = 0; i < ALPHABET_SIZE; i++){
-                //     children.emplace_back(nullptr);
-                // }
-
-                // // std::nullopt is key
-                // children.resize(ALPHABET_SIZE, make_optional<Node>());
-            }
-            virtual ~Node()
             {
             }
         };
@@ -80,42 +55,13 @@ namespace leetcode_139
                     auto n = std::make_unique<Node>();
                     current->children.emplace(offset, std::move(n));
                 }
-                current = current->children[offset].get();
-            }
-            current->isLeaf = true;
-        }
-
-        // difference between prefix and full word is about the isLeaf
-        bool searchWord(const string &w) const
-        {
-            cout << "searchWord: " << w << endl;
-            auto current = _root.get();
-            for (size_t i = 0; i < w.size(); ++i)
-            {
-                const auto offset = w[i] - 'a';
-                if (!current->children.contains(offset))
+                if (i == w.size() - 1)
                 {
-                    return false;
-                }
-
-                current = current->children[offset].get();
-            }
-            return current->isLeaf;
-        }
-
-        bool searchPrefix(const string &w) const
-        {
-            auto current = _root.get();
-            for (size_t i = 0; i < w.size(); ++i)
-            {
-                const auto offset = w[i] - 'a';
-                if (!current->children.contains(offset))
-                {
-                    return false;
+                    cout << "isLeaft hit" << endl;
+                    current->isLeaf = true;
                 }
                 current = current->children[offset].get();
             }
-            return true;
         }
 
     private:
