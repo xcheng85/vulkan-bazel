@@ -39,6 +39,16 @@ less memory footprint depends on the situation
 ### C++ implementation
 uncached value: 0 (not robust) and std::optional<int>
 
+## bit manipulation
+
+### 2’s complement signed integer
+
+Two's complement is the way every computer 
+
+1's complement signed integer: negate all bits 
+
+2's complement = 1's complement + 0x1
+
 ## greedy
 
 ## dfs
@@ -110,6 +120,21 @@ Each path from the root to any node represents a word or string.
 Each node of a Trie represents a string and each edge represents a character.
 
 ## BST
+
+limitation: no duplicate node
+
+implement efficient searching, insertion, and deletion operations.
+
+divide-and-conquer
+
+ self balancing BSTs (like AVL and Red Black Trees) are used in practice. These Self-Balancing BSTs maintain the height as O(Log n).
+
+ in-order traversal 
+
+ BSTs are used for indexing.
+ store and quickly retrieve data
+ BSTs can be used to implement decision trees, which are used in machine learning and artificial
+data caching.
 
 ## Segment Tree [x]
 

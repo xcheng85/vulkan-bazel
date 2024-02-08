@@ -16,9 +16,17 @@
 #include "./priority_queue/min_range_size.h"
 #include "./priority_queue/last_element_remain.h"
 #include "./bst/sum_k_smallest.h"
+#include "./bit/bit.h"
 
 int main()
 {
+    // binary index tree
+    {
+        bit::bit<int> bit({1, 2, 3, 4, 5});
+        cout << bit.rangeQuery(0, 2) << "\n";
+        cout << bit.rangeQuery(1, 4) << "\n";
+    }
+    // BST
     {
         sum_k_smallest::BST_Iterative<int> bst;
         bst.Insert({50, 30, 20, 40, 70, 60, 80});
