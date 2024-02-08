@@ -200,13 +200,47 @@ namespace sum_k_smallest
                     inorderSuccessorParent = inorderSuccessor;
                     inorderSuccessor = inorderSuccessor->left.get();
                 }
-                // there is no left successor, 
+                // there is no left successor,
                 // the node->right is the one to replace node.
-                if (inorderSuccessorParent == node)
-                    succParent->left = succ->right;
-
+                if (inorderSuccessorParent != node)
+                {
+                    // node
+                    //     p
+                    //   s
+                    //     r
+                    node->value = inorderSuccessor->value;
+                    inorderSuccessorParent->left = std::move(inorderSuccessor->right);
+                }
                 else
-                    succParent->right = succ->right;
+                {
+                    // p
+                    //   s
+                    //     r
+                    node->value = inorderSuccessor->value;
+                    inorderSuccessorParent->right = std::move(inorderSuccessor->right);
+                }
+            }
+        }
+
+        // bfs
+        void bfs()
+        {
+            // level
+            queue<pair<Node *, int>> bfs;
+            bfs.push({_root.get(), 0});
+
+            while (!bfs.empty())
+            {
+                auto &[curr, level] = bfs.front();
+                bfs.pop();
+                if(curr->left){
+                    bfs.push({curr->left.get(), level + 1});
+                }
+                if(curr->right){
+                    bfs.push({curr->right.get(), level + 1});
+                }
+
+                cout << format("level: {}, {}\n", level, curr->value);
             }
         }
 
