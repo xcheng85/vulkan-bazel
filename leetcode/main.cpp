@@ -1,5 +1,7 @@
 #include <spdlog/spdlog.h>
 #include <queue>
+#include <utility>
+#include <tuple>
 #include "./dsu/886.h"
 #include "./mst/1135.h"
 #include "./topologysort/207.h"
@@ -18,6 +20,7 @@
 #include "./bst/sum_k_smallest.h"
 #include "./bit/bit.h"
 #include "./bit/unqiue_elements_subarray.h"
+#include "./bit/smaller_number_subarray.h"
 
 int main()
 {
@@ -42,6 +45,16 @@ int main()
         // cout << bit.rangeQueryUniqueElement(0, 4) << "\n";
         // cout << bit.rangeQueryUniqueElement(1, 3) << "\n";
         // cout << bit.rangeQueryUniqueElement(2, 4) << "\n";
+    }
+
+    {
+        vector<int> a{2, 3, 4, 5};
+        bit::smallerElementsRange<int> bit{a};
+        const vector<tuple<int, int, int>> queries{
+            tuple<int, int, int>{0, 3, 5},
+            tuple<int, int, int>{0, 2, 2}
+        };
+        const auto res = bit.rangeQuerySmallerElementBatch(queries);
     }
     // BST
     {
