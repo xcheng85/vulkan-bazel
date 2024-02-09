@@ -33,9 +33,15 @@ int main()
         // bit::uniqueElements<int> array({1, 1, 2, 1, 3});
         vector<int> a{1, 1, 2, 1, 3};
         bit::uniqueElements<int> bit{a};
-        cout << bit.rangeQueryUniqueElement(0, 4) << "\n";
-        cout << bit.rangeQueryUniqueElement(1, 3) << "\n";
-        cout << bit.rangeQueryUniqueElement(2, 4) << "\n";
+
+        const auto res = bit.rangeQueryUniqueElementBatch({
+            std::pair{0, 4},
+            std::pair{1, 3},
+            std::pair{2, 4},
+        });
+        // cout << bit.rangeQueryUniqueElement(0, 4) << "\n";
+        // cout << bit.rangeQueryUniqueElement(1, 3) << "\n";
+        // cout << bit.rangeQueryUniqueElement(2, 4) << "\n";
     }
     // BST
     {

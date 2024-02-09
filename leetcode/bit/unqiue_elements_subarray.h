@@ -37,7 +37,8 @@ namespace bit
     public:
         uniqueElements(const vector<T> &input) : _bit(input.size() + 1), _input(input)
         {
-            for(const auto& e : _input){
+            for (const auto &e : _input)
+            {
                 cout << e << "\n";
             }
         }
@@ -46,7 +47,7 @@ namespace bit
         // [qs, qe]
         int rangeQueryUniqueElement(int qs, int qe)
         {
-            // does not work swap 
+            // does not work swap
             vector<T> tmp(_input.size() + 1);
             _bit.swap(tmp);
             // [value, index]
@@ -73,9 +74,48 @@ namespace bit
             return uniqueElementSum(qe) - uniqueElementSum(qs - 1);
         }
 
-        // vector<int> rangeQueryUniqueElementBatch(const vector<pair> queries){
+        vector<int> rangeQueryUniqueElementBatch(vector<pair<int, int>> &&queries)
+        {
+            vector<int> res;
 
-        // }
+            // 1. sorted so you don't need to rebuild the bit for each query
+            // also needs to carry the original index
+            sort(begin(queries), end(queries), [](pair<int, int> v1, pair<int, int> v2)
+                 { return v1.second < v2.second; });
+
+            // 2.
+            // [value, index]
+            unordered_map<int, int> hashmap;
+            int currentQueryId = 0;
+
+            // rebuild every time.
+            for (int i = 0; i < _input.size(); ++i)
+            {
+                const auto value = _input.at(i);
+                // cout << value << "\n";
+                // check cached index
+                if (hashmap.find(value) != hashmap.end())
+                {
+                    // to create the delta. or else when you do the uniqueElementSum, you will have 0 for the dup
+                    // clean the old index counter impact on the bit
+                    const auto oldIndex = hashmap.at(value);
+                    // counter--
+                    updateNode(oldIndex, -1);
+                }
+                hashmap[value] = i;
+                // increase counter for the curent node and propogate
+                updateNode(i, 1);
+
+                // compare the right boundary of query
+                while(currentQueryId < queries.size() && queries[currentQueryId].second == i){
+                    auto [qs, qe] = queries[currentQueryId];
+                    auto unqiueElementInRange = uniqueElementSum(qe) - uniqueElementSum(qs - 1);
+                    res.emplace_back(unqiueElementInRange);
+                    currentQueryId++;
+                }
+            }
+            return res;
+        }
 
     protected:
         // propagate downwards, index go larger
