@@ -21,6 +21,7 @@
 #include "./bit/bit.h"
 #include "./bit/unqiue_elements_subarray.h"
 #include "./bit/smaller_number_subarray.h"
+#include "./bit/inversion_count.h"
 
 int main()
 {
@@ -56,6 +57,15 @@ int main()
         };
         const auto res = bit.rangeQuerySmallerElementBatch(queries);
     }
+
+    {
+        vector<int> a{8, 4, 2, 1};
+        bit::inversiveCount<int> bit{a};
+        // functor
+        cout << bit() << "\n";
+    }
+
+
     // BST
     {
         sum_k_smallest::BST_Iterative<int> bst;
