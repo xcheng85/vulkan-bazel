@@ -58,7 +58,7 @@ Two's complement is the way every computer
 ## binary search
 o(n) to o(logn)
 
-## matrix
+## matrix [x]
 
 ## Priority Queue with Heap
 in c++, adaptor
@@ -140,7 +140,7 @@ data caching.
 
 ## Memorization
 
-## Binary Index Tree
+## Binary Index Tree [x]
 
 ## Geometry
 
@@ -155,3 +155,5 @@ data caching.
 ## Counting sort
 
 ## Radix sort
+
+## Randomized Algorithms [x]

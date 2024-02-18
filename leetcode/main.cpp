@@ -22,9 +22,40 @@
 #include "./bit/unqiue_elements_subarray.h"
 #include "./bit/smaller_number_subarray.h"
 #include "./bit/inversion_count.h"
+#include "./bit/bit2d.h"
+#include "./rand/generate_num_prob.h"
+#include "./rand/shuffle_cards.h"
+#include "./rand/generate_captcha.h"
+#include "./matrix/matrix.h"
 
 int main()
 {
+    // matrix
+    {
+        vector<vector<int>> a{
+            {1, 2, 3, 4},
+            {5, 3, 8, 1},
+            {4, 6, 7, 5},
+            {2, 4, 8, 9}};
+        matrix::Matrix<int> m{a};
+        cout << m << "\n";
+    }
+    // rand algorithm
+    {
+        rand_algo::generateNumberBasedOnProbabiliyFunctor f;
+        cout << f(1, 2, 3, 0, 100, 0) << "\n";
+    }
+
+    {
+        rand_algo::ShuffleCards f;
+        f();
+    }
+
+    {
+        rand_algo::CapchaCommand f;
+        cout << f(9) << "\n";
+    }
+
     // binary index tree
     {
         bit::bit<int> bit({1, 2, 3, 4, 5});
@@ -53,8 +84,7 @@ int main()
         bit::smallerElementsRange<int> bit{a};
         const vector<tuple<int, int, int>> queries{
             tuple<int, int, int>{0, 3, 5},
-            tuple<int, int, int>{0, 2, 2}
-        };
+            tuple<int, int, int>{0, 2, 2}};
         const auto res = bit.rangeQuerySmallerElementBatch(queries);
     }
 
@@ -64,7 +94,16 @@ int main()
         // functor
         cout << bit() << "\n";
     }
-
+    // 2d bit
+    {
+        vector<vector<int>> a{
+            {1, 2, 3, 4},
+            {5, 3, 8, 1},
+            {4, 6, 7, 5},
+            {2, 4, 8, 9}};
+        bit::bit2d<int> bit{a};
+        cout << bit.rangeQuery2D(1, 1, 3, 2) << "\n";
+    }
 
     // BST
     {
