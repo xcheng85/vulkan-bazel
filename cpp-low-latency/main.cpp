@@ -1,9 +1,12 @@
 #include <chrono>
 #include <format>
+#include <vector>
+#include <deque>
 #include "./memory-pool.h"
 #include "./lockfree-queue.h"
 #include "./thread-launcher.h"
 #include "./network/tcp-server.h"
+#include "./iterator-mt.h"
 
 using namespace std;
 using namespace cpp_low_latency;
@@ -36,6 +39,14 @@ void renderingFrame()
 
 int main()
 {
+    vector<int> dq;
+    for(int i = 0; i < 100; ++i){
+        dq.push_back(i);
+    }
+
+    auto r = AccumulateMT(begin(dq), end(dq), 0);
+    cout << r << endl;
+
     // cpp_low_latency::MemoryPool<tile2D> mp{64 * 64};
     // cpp_low_latency::LockFreeQueue<tile2D> queue(100);
     auto t1 = launchThread(0, "readTile#0", readTile, "grpc.server.com:443", 6);
