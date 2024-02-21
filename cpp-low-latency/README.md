@@ -3,6 +3,11 @@
 ## threads on linux
 thread affinity (pthread)
 
+### daemon threads application
+new window in word/vs code
+
+### thread id & unordered_map
+
 ## Memory pool
 
 ### overload operator new and operator delete

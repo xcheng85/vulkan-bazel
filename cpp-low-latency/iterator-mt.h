@@ -32,7 +32,7 @@ namespace cpp_low_latency
         auto blockSize = length / numThreads;
         vector<T> results(numThreads);
         // -1: due to main thread
-        vector<jthread> threads; //(numThreads - 1);
+        vector<jthread> threads(numThreads - 1);
         IteratorType blockStart{begin};
         for (size_t i = 0; i < (numThreads - 1); ++i)
         {
@@ -42,6 +42,11 @@ namespace cpp_low_latency
                 AccumulateBlockFunctor<IteratorType, T>(),
                 blockStart, blockEnd, std::ref(results[i]));
             blockStart = blockEnd;
+        }
+        // like wait_for group in golang
+        for (size_t i = 0; i < (numThreads - 1); ++i)
+        {
+            threads[i].join();
         }
         // last block is done by main thread
         AccumulateBlockFunctor<IteratorType, T>()(blockStart, end, results[numThreads - 1]);

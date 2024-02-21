@@ -7,10 +7,12 @@
 #include "./thread-launcher.h"
 #include "./network/tcp-server.h"
 #include "./iterator-mt.h"
+#include "./stack-mt.h"
 
 using namespace std;
 using namespace cpp_low_latency;
 using namespace cpp_low_latency::network;
+using namespace cpp_low_latency::mt;
 
 struct tile2D
 {
@@ -46,6 +48,8 @@ int main()
 
     auto r = AccumulateMT(begin(dq), end(dq), 0);
     cout << r << endl;
+
+    TestStackMt<int>();
 
     // cpp_low_latency::MemoryPool<tile2D> mp{64 * 64};
     // cpp_low_latency::LockFreeQueue<tile2D> queue(100);
