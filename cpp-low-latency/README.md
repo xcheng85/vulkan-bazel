@@ -8,6 +8,10 @@ new window in word/vs code
 
 ### thread id & unordered_map
 
+### multi-thread implementation of pub-sub, producer/consumer pattern
+
+communication pattern between threads
+
 ## Memory pool
 
 ### overload operator new and operator delete

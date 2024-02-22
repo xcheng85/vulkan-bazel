@@ -8,6 +8,7 @@
 #include "./network/tcp-server.h"
 #include "./iterator-mt.h"
 #include "./stack-mt.h"
+#include "./pub-sub.h"
 
 using namespace std;
 using namespace cpp_low_latency;
@@ -49,7 +50,11 @@ int main()
     auto r = AccumulateMT(begin(dq), end(dq), 0);
     cout << r << endl;
 
+    // thread-safe stack
     TestStackMt<int>();
+
+    // pub-sub
+    TestStreamPubSub();
 
     // cpp_low_latency::MemoryPool<tile2D> mp{64 * 64};
     // cpp_low_latency::LockFreeQueue<tile2D> queue(100);
