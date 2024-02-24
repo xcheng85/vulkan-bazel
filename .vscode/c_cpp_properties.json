@@ -9,6 +9,9 @@
                 "${workspaceFolder}/bazel-vulkan-bazel/external/boost-ext-di/include",
                 "${workspaceFolder}/bazel-vulkan-bazel/external/magic_enum/include",
                 "${workspaceFolder}/bazel-vulkan-bazel/external/vma/include",
+                "${workspaceFolder}/bazel-vulkan-bazel/external/gtest/googletest/include",
+                "${workspaceFolder}/bazel-vulkan-bazel/external/gtest/googlemock/include",
+                "${workspaceFolder}/bazel-vulkan-bazel/external/asio/include",
                 "${workspaceFolder}"
             ],
             "defines": [],

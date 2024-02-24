@@ -35,7 +35,7 @@ http_archive(
 
 git_repository(
     name = "boost-ext-di",
-    build_file = "@//third_party/boost-ext-di:boost-ext-di.BUILD",
+
     remote = "https://github.com/boost-ext/di.git",
     tag = "v1.3.0"
 )
@@ -67,6 +67,8 @@ git_repository(
     remote = "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git",
     tag = "v3.0.1"
 )
+
+
 
 http_archive(
     name = "magic_enum",
@@ -120,5 +122,14 @@ http_archive(
     strip_prefix = "glslang-vulkan-sdk-1.3.268.0",
     urls = [
         "https://github.com/KhronosGroup/glslang/archive/refs/tags/vulkan-sdk-1.3.268.0.zip"
+    ],
+)
+
+http_archive(
+    name = "asio",
+    build_file = "@//third_party/asio:asio.BUILD",
+    strip_prefix = "asio-asio-1-29-0/asio",
+    urls = [
+        "https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-29-0.zip",
     ],
 )
